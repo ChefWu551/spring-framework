@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 @Aspect
 @Component
-@Order(1)
+//@Order(1)
 public class MyAspect {
 
     /**
@@ -23,7 +23,7 @@ public class MyAspect {
      * 符号："||"和"|"和"&&"分别表示：或/非/且
      *
      */
-    @Pointcut("execution(public int com.mountain.*.Calculator.*(int, int)) || execution(public int com.mountain.*.Calculator.sub(int, int))")
+    @Pointcut("execution(public int com.mountain.*.MyCalculator.*(int, int)) || execution(public int com.mountain.*.Calculator.sub(int, int))")
     void pointCut(){
 
     }
