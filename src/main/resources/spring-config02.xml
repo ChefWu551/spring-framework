@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="jdbc.properties"/>
+
+    <!--
+        任务一：三种初始化bean的方法：静态工厂方法、实例化工厂方法、bean的直接初始化；bean的生命周期；
+    -->
+    <!-- 静态方法获取bean实例-->
+    <!--
+        bean 生命周期：
+        单实例： 构造器->postProcessorBeforeInit->初始化方法->postProcessorAfterInit->销毁方法（容器执行关闭触发 ConfigurableApplicationContext.close()）
+        多实例： 构造器->初始化方法 不会执行销毁
+    -->
+    <bean id="book01" class="com.mountain.factory.StaticInstanceFactory" factory-method="getBookInstance" init-method="initMethod" destroy-method="destoryMethod">
+        <constructor-arg value="bookNameValue"></constructor-arg>
+    </bean>
+
+    <!--
+        实例化方法获取bean 实例
+        1. 实例一个工厂bean
+        2. 通过工厂bean获取对应的bean实例
+    -->
+    <!--<bean id="book02" factory-bean="book" factory-method="getInstance">
+        <constructor-arg value="bookNameValue02"></constructor-arg>
+    </bean>
+    <bean id="book" class="com.mountain.factory.NewInstanceFactory">
+    </bean>-->
+
+    <!--
+        任务二：为bean初始化过程添加后置处理器，继承BeanPostProcessor
+    -->
+    <bean id="beanPostProcessor" class="com.mountain.processor.MyBeanPostProcessor"/>
+
+    <!--
+        任务三：SPLE语法知识
+        ${} : 直接引用
+        #{} : 可以使用表达式
+    -->
+    <bean id="jdbcConnection" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="url" value="#{book01.bookName.substring(1, 2)}"/>
+    </bean>
+
+    <!--
+        任务四：基于xml的自动装配，autowire标签
+        1. autowire=byName 通过名字作为id，默认是 content=>com.mountain.model.Content
+        2. autowire=byType 通过声明的唯一类
+        3. default 不自动
+        4. constructor 构造器
+    -->
+
+    <bean class="com.mountain.model.Content" id="content">
+        <property name="title" value="title of content"/>
+        <property name="pageNum" value="10"/>
+    </bean>
+
+    <bean id="book03" class="com.mountain.model.Book" autowire="byType">
+
+    </bean>
+</beans>

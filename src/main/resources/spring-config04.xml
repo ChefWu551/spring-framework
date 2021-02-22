@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.mountain"/>
+    <!--
+        实验五：测试泛型依赖注入[实践及画图]
+            - AService{}->UtilService<T>{@Autowired UtilDao<T> utilDao; utilDao.save();}
+            - BService->UtilService<T>{@Autowired UtilDao<T> utilDao; utilDao.save();}
+
+            - ADao{save}->UtilDao<T>{save()}
+            - BDao{save}->UtilDao<T>{save()}
+    -->
+
+   <!--
+      实验六：ioc源码，调试ioc容器[画画流程图、xmind图来看清楚每个方法做什么]
+         - 翻译方法干什么？
+         - 放行方法，直接从结果看方法作用
+         - 看注释
+   -->
+
+</beans>
