@@ -19,9 +19,9 @@
 - 实验一: 通过注解创建Dao service controller
 - 实验二: 使用context:include-filter指定扫描包时要包含的类
 - 实验三：使用context:exclude-filter指定扫描包是不包含的类
-- 实验四：DI依赖注入
+- **实验四：DI依赖注入**
 - 实验五：测试泛型依赖注入[实践及画图]
-- ==任务六：ioc源码，调试ioc容器[画画流程图、xmind图来看清楚每个方法做什么]==
+- ==**任务六：ioc源码，调试ioc容器[画画流程图、xmind图来看清楚每个方法做什么]**==
   - 通过打印内容找到对应的ioc创建bean的关键代码
   - 保存单例的HashMap的一级缓存
   - ApplicationContext和BeanFactory的区别
@@ -30,18 +30,28 @@
 
 #### 1.2.1. 注解篇
 
-- ==任务一：实现注解切面配置（`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解==
+- 实验一：实现注解切面配置（`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解
+  - ==todo: 笔记补充==
 - ==任务二：spring除了默认`java.lang.reflect.Proxy`还有使用的AOP增强包(`springSource.cglib`)[接口代理转类代理]==
-- ==任务三：切入点表达式`@PointCut(excution(public int com.mountain.*.*(int, int)))`==
-- ==任务四：通知方法的执行顺序`@Order`与切面嵌套图分析(多切面顺序分析)==
-- ==任务五：对切面的方法及返回值进行打印日志==
-- ==任务六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序==
+- 实验三：切入点表达式`@PointCut(excution(public int com.mountain.*.*(int, int)))`
+- 实验四：通知方法的执行顺序`@Order`与切面嵌套图分析(多切面顺序分析)
+- 实验五：对切面的方法及返回值进行打印日志
+- 实验六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序
+  - ==todo: 笔记补充==
 - ==任务七：使用xml实现和注解一样的功能==
 
 ### 1.3. spring-jdbcTemplate
 
 - ==任务一：jdbcTemplate的增删改查==
-- ==任务二：配置事务管理器控制事务的一致性==
+- **==任务二：配置事务管理器控制事务的一致性==**
+  - **Transaction**（整理事务隔离性笔记和传播性笔记）
+    - **isolation**(非常重要)
+    - **propagation**(非常重要)
+    - noRollbackFor/noRollbackForClassName/rollbackFor/rollbackForClassName
+    - readOnly/Timeout
+  - 受检异常和未受检异常回滚机制
+  - Transaction-readOnly/Timeout
+  - 并发修改
 
 ## 二、重点知识梳理
 
@@ -53,6 +63,8 @@
 
 ### 3.1.重点知识待办
 
-- autowired 是实现原理
-- bean生命周期源码及源码梳理
-- 
+- autowired 是实现原理（UML）
+- bean生命周期源码及源码梳理（UML）
+- 复习动态代理
+- 复习异常常见类型（xmin）及finally执行返回、赋值与try return中返回值的关系（coding）
+- 装饰类整理和io流装饰类整理（xmind）
