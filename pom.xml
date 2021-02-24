@@ -6,20 +6,27 @@
 
     <groupId>com.mountain</groupId>
     <artifactId>spring-framework</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>01bean-init</module>
+        <module>02bean-annotation</module>
+        <module>03bean-di</module>
+        <module>04spring-aop</module>
+    </modules>
 
     <dependencies>
         <!-- spring 命名空间 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>4.0.0.RELEASE</version>
+            <version>5.3.4</version>
         </dependency>
         <!--spring AOP @Aspect-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-            <version>4.0.0.RELEASE</version>
+            <version>5.3.4</version>
         </dependency>
 
         <!--alibaba jdbc datasource -->
