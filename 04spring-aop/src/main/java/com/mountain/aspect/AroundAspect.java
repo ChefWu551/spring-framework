@@ -13,7 +13,7 @@ import java.util.Arrays;
 //@Order(2)
 public class AroundAspect {
 
-    @Pointcut("execution(public int com.mountain.*.MyCalculator.*(int, int)) || execution(public int com.mountain.*.Calculator.sub(int, int))")
+    @Pointcut("execution(public int com.mountain.*.Calculator.*(int, int)) || execution(public int com.mountain.*.Calculator.sub(int, int))")
     void pointCut(){
 
     }

@@ -19,9 +19,9 @@
 - 实验一: 通过注解创建Dao service controller
 - 实验二: 使用context:include-filter指定扫描包时要包含的类
 - 实验三：使用context:exclude-filter指定扫描包是不包含的类
-- **实验四：DI依赖注入**
+- <a name="1.1.2实验四">**实验四：DI依赖注入**</a>
 - 实验五：测试泛型依赖注入[实践及画图]
-- ==**任务六：ioc源码，调试ioc容器[画画流程图、xmind图来看清楚每个方法做什么]**==
+- <a name="ioc源码">==**任务六：ioc源码，调试ioc容器[画画流程图、xmind图来看清楚每个方法做什么]**==</a>
   - 通过打印内容找到对应的ioc创建bean的关键代码
   - 保存单例的HashMap的一级缓存
   - ApplicationContext和BeanFactory的区别
@@ -30,20 +30,18 @@
 
 #### 1.2.1. 注解篇
 
-- 实验一：实现注解切面配置（`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解
-  - ==todo: 笔记补充==
+- <a name="实现注解切面配置">实验一：实现注解切面配置（`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解</a>
 - ==任务二：spring除了默认`java.lang.reflect.Proxy`还有使用的AOP增强包(`springSource.cglib`)[接口代理转类代理]==
 - 实验三：切入点表达式`@PointCut(excution(public int com.mountain.*.*(int, int)))`
 - 实验四：通知方法的执行顺序`@Order`与切面嵌套图分析(多切面顺序分析)
 - 实验五：对切面的方法及返回值进行打印日志
-- 实验六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序
-  - ==todo: 笔记补充==
-- ==任务七：使用xml实现和注解一样的功能==
+- <a name="环绕通知">实验六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序</a>
+- 实验七：使用xml实现和注解一样的功能
 
 ### 1.3. spring-jdbcTemplate
 
 - ==任务一：jdbcTemplate的增删改查==
-- **==任务二：配置事务管理器控制事务的一致性==**
+- <a name="事务管理">**==任务二：配置事务管理器控制事务的一致性==**</a>
   - **Transaction**（整理事务隔离性笔记和传播性笔记）
     - **isolation**(非常重要)
     - **propagation**(非常重要)
@@ -55,9 +53,59 @@
 
 ## 二、重点知识梳理
 
-### 1.1.2. [实验四：DI依赖注入]()
+### 1.1. IOC容器篇
+
+####  [实验四：DI依赖注入](#1.1.2实验四)
 
 ![spring-泛型类调用](image\spring-泛型类调用.png)
+
+####  todo-[实验六：ioc源码](#ioc源码)
+
+### 1.2. AOP
+
+#### [实验一：实现注解切面配置](#实现注解切面配置)
+
+​	若使用的是jdk自带的代理包时，应注意代理对象必须为接口不能是起本身。
+
+```java
+/**
+         *
+         * 实验一：spring+proxy.newInstance
+         * 注意:
+         *  - 这里spring使用的是jdk的proxy包，所以getBean应该是代理对象（Calculator）而不是实际对象（MyCalculator），否则报错，
+         *  - 若有两个类都实现了Calculator，则 NoUniqueBeanDefinitionException: No qualifying bean of type 'com.mountain.service.Calculator' available: expected single matching bean but found 2: myAOtherCalculator,myCalculator
+         *  - 若织入了aop的增强，则此时获取的bean必须是代理对象，实际对象是不能通过BeanFactory的getName/getType来获取得到的
+         */
+Calculator calculator = applicationContext.getBean(Calculator.class);
+// 注意此时对象类型是：对象类是：class com.sun.proxy.$Proxy20[代理对象]
+System.out.println("获取的对象是：" + calculator + "; 对象类是：" + calculator.getClass());
+```
+
+- aop常用词汇：切入点（切入点表达式）、连接点
+
+- aop切面执行顺序：
+
+​		a. 切面1（@Before）--- 切面1（@Around(前切)）
+
+​		b. 切面2（@Before）--- @Around(前切)
+
+​		c. 方法执行 
+
+​		d. 切面2（@Around(后切返回/异常)）--- 切面2（@after）
+
+​		e. 切面1（@Around(后切返回/异常)）--- 切面1（@Before）
+
+​		@Around和@Before若使用@Order指定顺序则按照类名首字母默认开始切入，步骤a、b无固定顺序，但是有相对顺序，先入后出，后入先出；步骤d、e同理
+
+
+
+#### [实验六：环绕通知](#环绕通知)
+
+### 1.3. spring-jdbcTemplate
+
+#### todo-[实验二：配置事务管理器控制事务的一致性](#事务管理)
+
+
 
 ## 三、待办清单
 

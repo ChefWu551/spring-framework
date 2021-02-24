@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-@Aspect
-@Component
+//@Aspect
+//@Component
 //@Order(1)
 public class MyAspect {
 
@@ -21,32 +21,32 @@ public class MyAspect {
      * 符号："||"和"|"和"&&"分别表示：或/非/且
      *
      */
-    @Pointcut("execution(public int com.mountain.*.MyCalculator.*(int, int)) || execution(public int com.mountain.*.Calculator.sub(int, int))")
+    @Pointcut("execution(public int com.mountain.*.Calculator.*(int, int)) || execution(public int com.mountain.*.Calculator.sub(int, int))")
     void pointCut(){
 
     }
 
     @Before(value = "pointCut()")
     public void beforeCalculate(JoinPoint joinPoint) {
-        System.out.println("beforeCalculate 入参：" + Arrays.asList(joinPoint.getArgs()) + "; 方法名称：" + joinPoint.getSignature().getName() );
+        System.out.println("myAspect beforeCalculate 入参：" + Arrays.asList(joinPoint.getArgs()) + "; 方法名称：" + joinPoint.getSignature().getName() );
     }
 
     @AfterReturning(value = "pointCut()", returning = "result")
     public Object afterReturningCalculate(JoinPoint joinPoint, int result) {
-        System.out.println("afterReturning: " + result);
+        System.out.println("myAspect afterReturning: " + result);
 
         return result;
     }
 
     @After("execution(public int com.mountain.service.Calculator.*(int, int))")
     public void afterCalculate() {
-        System.out.println("after");
+        System.out.println("myAspect after");
     }
 
     // 只有通过环绕通知才可捕获处理异常
     @AfterThrowing(value = "execution(public int com.mountain.service.Calculator.*(int, int))", throwing = "exception")
     public Object afterThrowingCalculate(JoinPoint joinPoint, Exception exception) throws Exception {
-        System.out.println("afterThrowing, 异常信息如下：");
+        System.out.println("myAspect afterThrowing, 异常信息如下：");
         System.out.println(exception.toString());
         return 0;
     }
