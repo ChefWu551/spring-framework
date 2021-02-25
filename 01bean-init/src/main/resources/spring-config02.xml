@@ -64,7 +64,7 @@
         <property name="pageNum" value="10"/>
     </bean>
 
-    <bean id="book03" class="com.mountain.model.Book" autowire="byType">
+    <bean id="book03" class="com.mountain.model.BookNum" autowire="byType">
 
     </bean>-->
 </beans>

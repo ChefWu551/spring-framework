@@ -44,7 +44,7 @@
 - <a name="事务管理">**==任务二：配置事务管理器控制事务的一致性==**</a>
   - **Transaction**（整理事务隔离性笔记和传播性笔记）
     - **isolation**(非常重要)
-    - **propagation**(非常重要)
+    - **propagation**(非常重要，required和requied_new再主事务和嵌套事务中的使用及影响)
     - noRollbackFor/noRollbackForClassName/rollbackFor/rollbackForClassName
     - readOnly/Timeout
   - 受检异常和未受检异常回滚机制
