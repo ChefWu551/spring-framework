@@ -13,9 +13,10 @@ public class SaleBook {
 
     @Transactional
     public void saleBook() {
-        int id = 5;
-        bookMapper.updateLeftAmount(id);
-        bookMapper.updateLeftNum(id);
-        System.out.println("销售成功；");
+            int id = 5;
+            bookMapper.updateLeftAmount(id);
+            bookMapper.updateLeftNum(id);
+            int a = 10/0;
+            System.out.println("销售成功；");
     }
 }

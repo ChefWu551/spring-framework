@@ -3,7 +3,6 @@ package com.mountain;
 import com.mountain.service.SaleBook;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 
 public class MainTransaction {
