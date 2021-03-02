@@ -51,6 +51,58 @@
   - Transaction-readOnly/Timeout
   - 并发修改
 
+### 1.4. spring-javaweb
+
+- ==任务一：spring与javaweb整合==
+  
+- WebApplicationContext(ContextInitialized & ContentDestory)
+  
+- ==任务二：请求Controller层的一些注解==
+  
+  - @RequestMapping注解源码及使用scope,value/method/params/headders/consumes/produce
+  - url带{} eg: user/{id}
+  - @PathVarible使用
+  - @RequestParam
+  - @RequestHeader
+  - @CookieValue
+  - 自动对象映射Book及嵌套自动映射Book(Author)
+- CharacterEncodingFilter对编码的设置
+  
+- ==任务三：REST风格请求==
+  
+  - PUT和DELETE等Http方法实现
+- 在spring mvc中的支持（HiddenHttpMethodFilter<-doFilterInternal()）
+  
+- ==任务四：spring+web==
+
+  - web.xml中
+
+    ```java
+    <servlet> 
+    	<servlet-name>springDispatcherServlet</>
+    	<servlet-class>org.springframwork.web.servletDispatcherServlet
+    </servlet>
+    ```
+
+  - HttpRequest/HttpResponse
+
+  - 在controller方法中使用Map/Model/ModelMap及三个实现的原理（**BindingAwareModelMap**）
+
+  - **解析DisptcherServlet继承实现树及源码**
+
+    - 发起请求
+    - HttpServlet-doGet/doPost
+    - FramworkServlet-processRequest
+    - DisptcherServlet-doService-**doDisptch**
+      - 1. getHeader()根据请求地址找到处理这个请求的目标处理器
+        2. getHandlerAdapter()根据当前处理器类获取能执行的处理适配器方法
+        3. 使用刚才获取的适配器AnnotationMethodHandlerAdapter执行目标方法
+        4. 目标执行后返回一个modelAndView对象
+        5. 根据modelAndView的信息转发到目标具体页面并可以在请求域取出改对象
+
+    - spring mvc九大组件-《看透springmvc源码分析与实践》DisptcherServlet-onRefresh
+      - ha.handle
+
 ## 二、重点知识梳理
 
 ### 1.1. IOC容器篇
@@ -96,10 +148,6 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 ​		e. 切面1（@Around(后切返回/异常)）--- 切面1（@Before）
 
 ​		@Around和@Before若使用@Order指定顺序则按照类名首字母默认开始切入，步骤a、b无固定顺序，但是有相对顺序，先入后出，后入先出；步骤d、e同理
-
-
-
-#### [实验六：环绕通知](#环绕通知)
 
 ### 1.3. spring-jdbcTemplate
 
