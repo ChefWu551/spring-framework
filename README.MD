@@ -151,9 +151,91 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
 ### 1.3. spring-jdbcTemplate
 
-#### todo-[实验二：配置事务管理器控制事务的一致性](#事务管理)
+#### [实验二：配置事务管理器控制事务的一致性](#事务管理)
 
+- a. 依赖相关:5.3.3中自带了spring-tx包相关依赖
 
+```xml
+<!-- spring 命名空间 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>5.3.4</version>
+</dependency>
+<!--spring AOP @Aspect-->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aspects</artifactId>
+    <version>5.3.4</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>5.3.3</version>
+</dependency>
+```
+
+- b. 配置spring-xml
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:context="http://www.springframework.org/schema/context"
+         xmlns:tx="http://www.springframework.org/schema/tx"
+         xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context
+         https://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+  
+      <context:component-scan base-package="com.mountain"/>
+  
+      <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
+          <property name="username" value="root"/>
+          <property name="password" value="root"/>
+          <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"/>
+          <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+      </bean>
+  
+      <bean class="org.springframework.jdbc.core.JdbcTemplate" id="jdbcTemplate">
+          <constructor-arg ref="dataSource" name="dataSource" />
+      </bean>
+  
+      <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+          <property name="dataSource" ref="dataSource"/>
+      </bean>
+      <!--
+          注意此处开启注解，需添加事务的xml文件约束，否则事务控制失效
+          xmlns:tx="http://www.springframework.org/schema/tx"
+          xsi:schemaLocation="http://www.springframework.org/schema/tx 
+          http://www.springframework.org/schema/tx/spring-tx.xsd"
+      -->
+    	<!-- 开启事务注解,默认的事务注解名称是transactionManager,所以此处可以不写,若非默认,则:
+  		<tx:annotation-driven transaction-manager="自定义事务的bean id"/>
+  	-->  
+      <tx:annotation-driven/>
+  ```
+
+- c. 在要处理的方法上加@Transactional注解
+
+  - 事务并发问题及处理对应情况
+
+    - 脏读: 事务1修改了value，事务2独取了value，事务1回滚，这时候事务2独取到的值是脏数据
+    - 幻读: 事务1读取了value，事务2修改了value，事务1再次独取value时两次独取不一致
+    - 不可重复读: 两次独取到的数量不一致
+
+    |                                         | 脏读 | 不可重复读 | 幻读 |
+    | --------------------------------------- | ---- | ---------- | ---- |
+    | READ_UNCOMMITTED(读未提交)              | 有   | 有         | 有   |
+    | READ_COMMITTED(读已提交)                | 无   | 有         | 有   |
+    | **REPEATABLE_READ(可重复读,mysql默认)** | 无   | 无         | 有   |
+    | SERIALIZABLE(串行化)                    | 无   | 无         | 无   |
+
+  - 事务的传播性propagation
+    - Propagation.REQUIRES_NEW 另起一个事务，该事务与主事务无关
+    - Propagation.REQUIRED 和主事务绑定，若主事务执行异常则一同失败
 
 ## 三、待办清单
 
