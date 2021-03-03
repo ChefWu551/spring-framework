@@ -8,16 +8,16 @@
        http://www.springframework.org/schema/context
        https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <context:component-scan base-package="com.mountain"/>
+    <context:component-scan base-package="com.com.mountain"/>
 
     <aop:aspectj-autoproxy/>
 
     <!-- 注意：使用jdk proxy的时候，切点应该是代理对象而不是实际对象，否则切面失效！！！-->
-    <bean id="myAspect" class="com.mountain.aspect.MyAspect"/>
+    <bean id="myAspect" class="com.com.mountain.aspect.MyAspect"/>
 
     <aop:config>
         <aop:aspect id="myAspect" ref="myAspect">
-            <aop:pointcut id="pointCut" expression="execution(int com.mountain.service.Calculator.*(int, int))"/>
+            <aop:pointcut id="pointCut" expression="execution(int com.com.mountain.service.Calculator.*(int, int))"/>
             <aop:before pointcut-ref="pointCut" method="beforeCalculate"/>
             <aop:after-returning pointcut-ref="pointCut" method="afterReturningCalculate" returning="result"/>
             <aop:after pointcut-ref="pointCut" method="afterCalculate"/>

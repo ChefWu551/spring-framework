@@ -19,32 +19,32 @@
         2. 告诉spring自动扫描加入了注解的组件，依赖context明明空间
             - id默认是类名首字母小写,可以通过@Component("newComponent")来修改对应的bean id]
             - @Scope 可以声明单例或者多实例
-            - 通过<context:component-scan base-package="com.mountain"/>来进行扫描包
+            - 通过<context:component-scan base-package="com.com.mountain"/>来进行扫描包
         3.  一定要导入aop包（支持注解模式）【com.springframework.aop.targetSource】
    -->
-    <context:component-scan base-package="com.mountain"/>
+    <context:component-scan base-package="com.com.mountain"/>
 
 
     <!--
         实验二: 使用context:include-filter指定扫描包时要包含的类
             - 与exclude-filter相反
             - 此时需要禁用默认全局扫描规则
-                <context:component-scan base-package="com.mountain" use-default-filters="false">
+                <context:component-scan base-package="com.com.mountain" use-default-filters="false">
 
         实验三：使用context:exclude-filter指定扫描包是不包含的类
             type 类型含义
             - type="annotation": 指定排除规则，按照注解进行排除，标注了指定注解的组件不要 expression="" 注解的全类名
                 <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
             - type="assignable": 指定排除某个具体的类，按照类排除 expression="" 类的全类名
-                <context:exclude-filter type="assignable" expression="com.mountain.service.serviceImpl.ServiceTest"/>
+                <context:exclude-filter type="assignable" expression="com.com.mountain.service.serviceImpl.ServiceTest"/>
             - type="aspectj"
             - type="custom"
             - type="regex"
 
         -->
 
-    <!--<context:component-scan base-package="com.mountain">
-        <context:exclude-filter type="assignable" expression="com.mountain.service.serviceImpl.ServiceTest"/>
+    <!--<context:component-scan base-package="com.com.mountain">
+        <context:exclude-filter type="assignable" expression="com.com.mountain.service.serviceImpl.ServiceTest"/>
         &lt;!&ndash;<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>&ndash;&gt;
     </context:component-scan>-->
 
@@ -68,7 +68,7 @@
             - @Autowired：org.springframework.beans.factory.annotation.Autowired spring自己的注解
             - @Resource：javax.annotation.Resource j2ee注解，扩展性更强，如果切换成另一个容器框架，@Resource依然适用
     -->
-    <!--<context:component-scan base-package="com.mountain">
+    <!--<context:component-scan base-package="com.com.mountain">
 
     </context:component-scan>-->
 

@@ -32,7 +32,7 @@
 
 - <a name="实现注解切面配置">实验一：实现注解切面配置（`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解</a>
 - ==任务二：spring除了默认`java.lang.reflect.Proxy`还有使用的AOP增强包(`springSource.cglib`)[接口代理转类代理]==
-- 实验三：切入点表达式`@PointCut(excution(public int com.mountain.*.*(int, int)))`
+- 实验三：切入点表达式`@PointCut(excution(public int com.com.mountain.*.*(int, int)))`
 - 实验四：通知方法的执行顺序`@Order`与切面嵌套图分析(多切面顺序分析)
 - 实验五：对切面的方法及返回值进行打印日志
 - <a name="环绕通知">实验六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序</a>
@@ -40,8 +40,8 @@
 
 ### 1.3. spring-jdbcTemplate
 
-- ==任务一：jdbcTemplate的增删改查==
-- <a name="事务管理">**==任务二：配置事务管理器控制事务的一致性==**</a>
+- 实验一：jdbcTemplate的增删改查
+- <a name="事务管理">**实验二：配置事务管理器控制事务的一致性**</a>
   - **Transaction**（整理事务隔离性笔记和传播性笔记）
     - **isolation**(非常重要)
     - **propagation**(非常重要，required和requied_new再主事务和嵌套事务中的使用及影响)
@@ -125,9 +125,8 @@
          * 实验一：spring+proxy.newInstance
          * 注意:
          *  - 这里spring使用的是jdk的proxy包，所以getBean应该是代理对象（Calculator）而不是实际对象（MyCalculator），否则报错，
-         *  - 若有两个类都实现了Calculator，则 NoUniqueBeanDefinitionException: No qualifying bean of type 'com.mountain.service.Calculator' available: expected single matching bean but found 2: myAOtherCalculator,myCalculator
-         *  - 若织入了aop的增强，则此时获取的bean必须是代理对象，实际对象是不能通过BeanFactory的getName/getType来获取得到的
-         */
+         *com.mountain
+         *  - 若织入了aop的增强，则此时获取的bean必须是代理对象，实际对象是不能通过BeanFactory的getName/getTypcom.mountain         */
 Calculator calculator = applicationContext.getBean(Calculator.class);
 // 注意此时对象类型是：对象类是：class com.sun.proxy.$Proxy20[代理对象]
 System.out.println("获取的对象是：" + calculator + "; 对象类是：" + calculator.getClass());
@@ -195,7 +194,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
       <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
           <property name="username" value="root"/>
           <property name="password" value="root"/>
-          <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"/>
+com.mountain  <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"/>
           <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
       </bean>
   

@@ -14,7 +14,7 @@
             - 属性的getter、setter
     -->
     <!--scope: 表示单例或者多实例-->
-    <bean class="com.mountain.model.BookNum" id="book" scope="singleton">
+    <bean class="com.com.mountain.model.BookNum" id="book" scope="singleton">
         <property name="bookName" value="平凡的世界"/>
         <property name="author" value="路遥"/>
         <property name="age" value="${book.age}"/>
@@ -24,7 +24,7 @@
         任务二：构造方法初始化bean及标签index顺序赋值使用
             - 带参构造方法
     -->
-    <bean class="com.mountain.model.BookNum" id="book01">
+    <bean class="com.com.mountain.model.BookNum" id="book01">
         <constructor-arg value="红楼梦" index="0"/>
         <constructor-arg value="曹雪芹" index="1"/>
         <constructor-arg value="45" index="2"/>
@@ -33,7 +33,7 @@
     <!--
         任务三：泛型容器的赋值list、map、List<Object>;标签ref的外部引用；parent继承属性及修改对应的bean属性值[指向性，所以当重新对对象赋值后，原对象的属性值也会跟着改变]；
     -->
-    <bean class="com.mountain.model.Person" id="person01">
+    <bean class="com.com.mountain.model.Person" id="person01">
         <property name="lastName" value="小明"/>
         <property name="age" value="12"/>
         <property name="list">
@@ -53,18 +53,18 @@
         <!--<property name="book" ref="book01">-->
         <property name="book">
             <!--parent：对某个bean的引用，相当于类的extend，不是同一个对象！-->
-            <bean class="com.mountain.model.BookNum" parent="book">
+            <bean class="com.com.mountain.model.Book" parent="book">
                 <property name="bookName" value="西游记"/>
                 <property name="age" value="13"/>
             </bean>
         </property>
         <property name="books">
             <list>
-                <bean class="com.mountain.model.BookNum">
+                <bean class="com.com.mountain.model.Book">
                     <property name="bookName" value="books01"/>
                     <property name="author" value="author01"/>
                 </bean>
-                <bean class="com.mountain.model.BookNum">
+                <bean class="com.com.mountain.model.Book">
                     <property name="bookName" value="books02"/>
                     <property name="age" value="100"/>
                 </bean>
@@ -76,7 +76,7 @@
         任务四：abstract声明true时候不会生成对应的bean，此时对象只能作为模板，被其他bean所引用；
     -->
     <!--exception: BeanIsAbstractException: Error creating bean with name 'bookTemplate': Bean definition is abstract -->
-    <bean class="com.mountain.model.BookNum" id="bookTemplate" abstract="true">
+    <bean class="com.com.mountain.model.BookNum" id="bookTemplate" abstract="true">
         <constructor-arg value="bookNameTemp"/>
         <constructor-arg value="authorTemp"/>
         <constructor-arg value="12"/>

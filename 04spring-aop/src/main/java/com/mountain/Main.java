@@ -21,7 +21,7 @@ public class Main {
          * 实验一：spring+proxy.newInstance
          * 注意:
          *  - 这里spring使用的是jdk的proxy包，所以getBean应该是代理对象（Calculator）而不是实际对象（MyCalculator），否则报错，
-         *  - 若有两个类都实现了Calculator，则 NoUniqueBeanDefinitionException: No qualifying bean of type 'com.mountain.service.Calculator' available: expected single matching bean but found 2: myAOtherCalculator,myCalculator
+         *  - 若有两个类都实现了Calculator，则 NoUniqueBeanDefinitionException: No qualifying bean of type 'com.com.mountain.service.Calculator' available: expected single matching bean but found 2: myAOtherCalculator,myCalculator
          *  - 若织入了aop的增强，则此时获取的bean必须是代理对象，实际对象是不能通过BeanFactory的getName/getType来获取得到的
          */
         Calculator calculator = applicationContext.getBean(Calculator.class);
