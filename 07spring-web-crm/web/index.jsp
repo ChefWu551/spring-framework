@@ -14,5 +14,6 @@
   $END$
 
   <a href="hello">hello</a>
+  <a href="origin">hello_origin_request</a>
   </body>
 </html>

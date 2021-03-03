@@ -53,26 +53,33 @@
 
 ### 1.4. spring-javaweb
 
-- ==任务一：spring与javaweb整合==
+- 实验一：spring与javaweb整合
   
-- WebApplicationContext(ContextInitialized & ContentDestory)
+  - WebApplicationContext(ContextInitialized & ContentDestory)
   
-- ==任务二：请求Controller层的一些注解==
+- 实验二：请求Controller层的一些注解
   
-  - @RequestMapping注解源码及使用scope,value/method/params/headders/consumes/produce
+  - @RequestMapping注解源码及使用
+    - scope 类与方法
+    - value=path=name
+    - method限制请求方法 get/post/options/trace/delete/put/head//patch
+    - params缩小请求范围，可指定必要参数和一定不含有参数及对应参数值
+    - headers规定请求头
+    - consumes请求实体首部内容限制
+    - produce相应实体首部内容限制
   - url带{} eg: user/{id}
   - @PathVarible使用
   - @RequestParam
   - @RequestHeader
-  - @CookieValue
+  - @CookieValue：header内，key是 Cookie, value是eg:cookieParameter=qwe
   - 自动对象映射Book及嵌套自动映射Book(Author)
 - CharacterEncodingFilter对编码的设置
   
-- ==任务三：REST风格请求==
+- ==~~任务三：REST风格请求~~==
   
   - PUT和DELETE等Http方法实现
-- 在spring mvc中的支持（HiddenHttpMethodFilter<-doFilterInternal()）
   
+  - 在spring mvc中的支持（HiddenHttpMethodFilter<-doFilterInternal()）
 - ==任务四：spring+web==
 
   - web.xml中
@@ -102,6 +109,9 @@
 
     - spring mvc九大组件-《看透springmvc源码分析与实践》DisptcherServlet-onRefresh
       - ha.handle
+  
+  - InternalViewResolver源码，为什么prefix和suffix会自动和指向页面拼串
+  - 视图解析其和渲染器ha.handle->processDispatherResult->render->viewResolver->resolveViewName->...
 
 ## 二、重点知识梳理
 
@@ -243,5 +253,9 @@ com.mountain  <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"
 - autowired 是实现原理（UML）
 - bean生命周期源码及源码梳理（UML）
 - 复习动态代理
-- 复习异常常见类型（xmin）及finally执行返回、赋值与try return中返回值的关系（coding）
+- 复习异常常见类型（xmind）及finally执行返回、赋值与try return中返回值的关系（coding）
 - 装饰类整理和io流装饰类整理（xmind）
+- REST风格
+- servlet
+- 重定向
+- 查看认证权限的用户id是怎么带入到业务代码中的

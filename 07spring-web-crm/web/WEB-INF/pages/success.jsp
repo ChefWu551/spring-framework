@@ -12,5 +12,6 @@
 </head>
 <body>
     <h1>成功!</h1>
+    <h1>请求set值: ${requestScope.requestValue}</h1>
 </body>
 </html>
