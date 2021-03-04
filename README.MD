@@ -16,116 +16,37 @@
 
 #### 1.1.2. 注解篇
 
-- 实验一: 通过注解创建Dao service controller
-- 实验二: 使用context:include-filter指定扫描包时要包含的类
-- 实验三：使用context:exclude-filter指定扫描包是不包含的类
-- <a name="1.1.2实验四">**实验四：DI依赖注入**</a>
-- 实验五：测试泛型依赖注入[实践及画图]
-- <a name="ioc源码">==**任务六：ioc源码，调试ioc容器[画画流程图、xmind图来看清楚每个方法做什么]**==</a>
-  - 通过打印内容找到对应的ioc创建bean的关键代码
-  - 保存单例的HashMap的一级缓存
-  - ApplicationContext和BeanFactory的区别
+##### 1.1.2.1. 实验一: 通过注解创建Dao service controller
+
+##### 1.1.2.2.实验二: context:include-filter
+
+- 指定扫描包时要包含的类
+
+##### 1.1.2.3.实验三：使用context:exclude-filter
+
+- 指定扫描包是不包含的类
+
+##### 1.1.2.4.**实验四：DI依赖注入**[重要]
+
+![spring-泛型类调用](image\spring-泛型类调用.png)
+
+##### 1.1.2.5.实验五：测试泛型依赖注入[实践及画图]
+
+##### 1.1.2.6.==**任务六：ioc源码，调试ioc容器[重要]**==
+
+[画画流程图、xmind图来看清楚每个方法做什么]
+
+- 通过打印内容找到对应的ioc创建bean的关键代码
+- 保存单例的HashMap的一级缓存
+- ApplicationContext和BeanFactory的区别
 
 ### 1.2. AOP
 
 #### 1.2.1. 注解篇
 
-- <a name="实现注解切面配置">实验一：实现注解切面配置（`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解</a>
-- ==任务二：spring除了默认`java.lang.reflect.Proxy`还有使用的AOP增强包(`springSource.cglib`)[接口代理转类代理]==
-- 实验三：切入点表达式`@PointCut(excution(public int com.com.mountain.*.*(int, int)))`
-- 实验四：通知方法的执行顺序`@Order`与切面嵌套图分析(多切面顺序分析)
-- 实验五：对切面的方法及返回值进行打印日志
-- <a name="环绕通知">实验六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序</a>
-- 实验七：使用xml实现和注解一样的功能
+##### 1.2.1.1. 实验一：实现注解切面配置
 
-### 1.3. spring-jdbcTemplate
-
-- 实验一：jdbcTemplate的增删改查
-- <a name="事务管理">**实验二：配置事务管理器控制事务的一致性**</a>
-  - **Transaction**（整理事务隔离性笔记和传播性笔记）
-    - **isolation**(非常重要)
-    - **propagation**(非常重要，required和requied_new再主事务和嵌套事务中的使用及影响)
-    - noRollbackFor/noRollbackForClassName/rollbackFor/rollbackForClassName
-    - readOnly/Timeout
-  - 受检异常和未受检异常回滚机制
-  - Transaction-readOnly/Timeout
-  - 并发修改
-
-### 1.4. spring-javaweb
-
-- 实验一：spring与javaweb整合
-  
-  - WebApplicationContext(ContextInitialized & ContentDestory)
-  
-- 实验二：请求Controller层的一些注解
-  
-  - @RequestMapping注解源码及使用
-    - scope 类与方法
-    - value=path=name
-    - method限制请求方法 get/post/options/trace/delete/put/head//patch
-    - params缩小请求范围，可指定必要参数和一定不含有参数及对应参数值
-    - headers规定请求头
-    - consumes请求实体首部内容限制
-    - produce相应实体首部内容限制
-  - url带{} eg: user/{id}
-  - @PathVarible使用
-  - @RequestParam
-  - @RequestHeader
-  - @CookieValue：header内，key是 Cookie, value是eg:cookieParameter=qwe
-  - 自动对象映射Book及嵌套自动映射Book(Author)
-- CharacterEncodingFilter对编码的设置
-  
-- ==~~任务三：REST风格请求~~==
-  
-  - PUT和DELETE等Http方法实现
-  
-  - 在spring mvc中的支持（HiddenHttpMethodFilter<-doFilterInternal()）
-- ==任务四：spring+web==
-
-  - web.xml中
-
-    ```java
-    <servlet> 
-    	<servlet-name>springDispatcherServlet</>
-    	<servlet-class>org.springframwork.web.servletDispatcherServlet
-    </servlet>
-    ```
-
-  - HttpRequest/HttpResponse
-
-  - 在controller方法中使用Map/Model/ModelMap及三个实现的原理（**BindingAwareModelMap**）
-
-  - **解析DisptcherServlet继承实现树及源码**
-
-    - 发起请求
-    - HttpServlet-doGet/doPost
-    - FramworkServlet-processRequest
-    - DisptcherServlet-doService-**doDisptch**
-      - 1. getHeader()根据请求地址找到处理这个请求的目标处理器
-        2. getHandlerAdapter()根据当前处理器类获取能执行的处理适配器方法
-        3. 使用刚才获取的适配器AnnotationMethodHandlerAdapter执行目标方法
-        4. 目标执行后返回一个modelAndView对象
-        5. 根据modelAndView的信息转发到目标具体页面并可以在请求域取出改对象
-
-    - spring mvc九大组件-《看透springmvc源码分析与实践》DisptcherServlet-onRefresh
-      - ha.handle
-  
-  - InternalViewResolver源码，为什么prefix和suffix会自动和指向页面拼串
-  - 视图解析其和渲染器ha.handle->processDispatherResult->render->viewResolver->resolveViewName->...
-
-## 二、重点知识梳理
-
-### 1.1. IOC容器篇
-
-####  [实验四：DI依赖注入](#1.1.2实验四)
-
-![spring-泛型类调用](image\spring-泛型类调用.png)
-
-####  todo-[实验六：ioc源码](#ioc源码)
-
-### 1.2. AOP
-
-#### [实验一：实现注解切面配置](#实现注解切面配置)
+- （`@Before`/`@AfterReturning`/`@AfterThrowing`/`@After`）及官方词语详解
 
 ​	若使用的是jdk自带的代理包时，应注意代理对象必须为接口不能是起本身。
 
@@ -158,9 +79,34 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
 ​		@Around和@Before若使用@Order指定顺序则按照类名首字母默认开始切入，步骤a、b无固定顺序，但是有相对顺序，先入后出，后入先出；步骤d、e同理
 
+==任务二：spring除了默认`java.lang.reflect.Proxy`还有使用的AOP增强包(`springSource.cglib`)[接口代理转类代理]==
+
+实验三：切入点表达式`@PointCut(excution(public int com.com.mountain.*.*(int, int)))`
+
+实验四：通知方法的执行顺序`@Order`与切面嵌套图分析(多切面顺序分析)
+
+实验五：对切面的方法及返回值进行打印日志
+
+实验六：环绕通知`@Around`且环绕通知与其他通知的执行顺序，多切面的执行顺序
+
+实验七：使用xml实现和注解一样的功能
+
 ### 1.3. spring-jdbcTemplate
 
-#### [实验二：配置事务管理器控制事务的一致性](#事务管理)
+#### 1.3.1. 实验一：jdbcTemplate的增删改查
+
+#### 1.3.2. **实验二：配置事务管理器控制事务的一致性**</a>
+
+- **Transaction**（整理事务隔离性笔记和传播性笔记）
+  - **isolation**(非常重要)
+  - **propagation**(非常重要，required和requied_new再主事务和嵌套事务中的使用及影响)
+  - noRollbackFor/noRollbackForClassName/rollbackFor/rollbackForClassName
+  - readOnly/Timeout
+- 受检异常和未受检异常回滚机制
+- Transaction-readOnly/Timeout
+- 并发修改
+
+**实现:**
 
 - a. 依赖相关:5.3.3中自带了spring-tx包相关依赖
 
@@ -204,7 +150,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
       <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
           <property name="username" value="root"/>
           <property name="password" value="root"/>
-com.mountain  <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"/>
+  com.mountain  <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"/>
           <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
       </bean>
   
@@ -243,8 +189,74 @@ com.mountain  <property name="url" value="jdbc:mysql://localhost:3306/spring_tx"
     | SERIALIZABLE(串行化)                    | 无   | 无         | 无   |
 
   - 事务的传播性propagation
+
     - Propagation.REQUIRES_NEW 另起一个事务，该事务与主事务无关
     - Propagation.REQUIRED 和主事务绑定，若主事务执行异常则一同失败
+
+### 1.4. spring-javaweb
+
+- 实验一：spring与javaweb整合
+  
+  - WebApplicationContext(ContextInitialized & ContentDestory)
+  
+- 实验二：请求Controller层的一些注解
+  
+  - @RequestMapping注解源码及使用
+    - scope 类与方法
+    - value=path=name
+    - method限制请求方法 get/post/options/trace/delete/put/head//patch
+    - params缩小请求范围，可指定必要参数和一定不含有参数及对应参数值
+    - headers规定请求头
+    - consumes请求实体首部内容限制
+    - produce相应实体首部内容限制
+  - url带{} eg: user/{id}
+  - @PathVarible使用
+  - @RequestParam
+  - @RequestHeader
+  - @CookieValue：header内，key是 Cookie, value是eg:cookieParameter=qwe
+  - 自动对象映射Book及嵌套自动映射Book(Author)
+- CharacterEncodingFilter对编码的设置
+  
+- ~~任务三：REST风格请求~~
+  
+  - PUT和DELETE等Http方法实现
+  
+  - 在spring mvc中的支持（HiddenHttpMethodFilter<-doFilterInternal()）
+- **==任务四：spring+web==(核心源码位置**)
+
+  - web.xml中
+
+    ```java
+    <servlet> 
+    	<servlet-name>springDispatcherServlet</>
+    	<servlet-class>org.springframwork.web.servletDispatcherServlet
+    </servlet>
+    ```
+
+  - HttpRequest/HttpResponse
+
+  - 在controller方法中使用Map/Model/ModelMap及三个实现的原理（**BindingAwareModelMap**）
+
+  - **解析DisptcherServlet 启动流程源码-继承实现树及源码**
+
+    - 发起请求
+    - HttpServlet-doGet/doPost
+    - FramworkServlet-processRequest
+    - DisptcherServlet-doService-**doDisptch**(spring 核心)
+      - 1. getHeadler()根据请求地址找到处理这个请求的目标处理器
+        2. getHandlerAdapter()根据当前处理器类获取能执行的处理适配器方法
+        3. 使用刚才获取的适配器AnnotationMethodHandlerAdapter执行目标方法
+        4. 目标执行后返回一个modelAndView对象
+        5. 根据modelAndView的信息转发到目标具体页面并可以在请求域取出改对象
+
+    - spring mvc九大组件-《看透springmvc源码分析与实践》DisptcherServlet-onRefresh
+      - ha.handle
+  
+    ![spring-webmvc GET请求执行流程](image\spring-webmvc GET请求执行流程.PNG)
+  
+  - InternalViewResolver源码，为什么prefix和suffix会自动和指向页面拼串
+  
+  - 视图解析其和渲染器ha.handle->processDispatherResult->render->viewResolver->resolveViewName->
 
 ## 三、待办清单
 
