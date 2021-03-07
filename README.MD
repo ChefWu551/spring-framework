@@ -195,26 +195,27 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
 ### 1.4. spring-javaweb
 
-- 实验一：spring与javaweb整合
-  
-  - WebApplicationContext(ContextInitialized & ContentDestory)
-  
-- 实验二：请求Controller层的一些注解
-  
-  - @RequestMapping注解源码及使用
-    - scope 类与方法
-    - value=path=name
-    - method限制请求方法 get/post/options/trace/delete/put/head//patch
-    - params缩小请求范围，可指定必要参数和一定不含有参数及对应参数值
-    - headers规定请求头
-    - consumes请求实体首部内容限制
-    - produce相应实体首部内容限制
-  - url带{} eg: user/{id}
-  - @PathVarible使用
-  - @RequestParam
-  - @RequestHeader
-  - @CookieValue：header内，key是 Cookie, value是eg:cookieParameter=qwe
-  - 自动对象映射Book及嵌套自动映射Book(Author)
+#### 1.4.1. 实验一：spring与javaweb整合
+
+- WebApplicationContext(ContextInitialized & ContentDestory)
+
+#### 1.4.2. 实验二：请求Controller层的一些注解
+
+- @RequestMapping注解源码及使用
+  - scope 类与方法
+  - value=path=name
+  - method限制请求方法 get/post/options/trace/delete/put/head//patch
+  - params缩小请求范围，可指定必要参数和一定不含有参数及对应参数值
+  - headers规定请求头
+  - consumes请求实体首部内容限制
+  - produce相应实体首部内容限制
+- url带{} eg: user/{id}
+- @PathVarible使用
+- @RequestParam
+- @RequestHeader
+- @CookieValue：header内，key是 Cookie, value是eg:cookieParameter=qwe
+- 自动对象映射Book及嵌套自动映射Book(Author)
+
 - CharacterEncodingFilter对编码的设置
   
 - ~~任务三：REST风格请求~~
@@ -258,16 +259,152 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
   
   - 视图解析其和渲染器ha.handle->processDispatherResult->render->viewResolver->resolveViewName->
 
+#### ==1.4.3. 实验三：重定向redirect和转发forward==
+
+#### ==1.4.4. 实验四：\<mvc>标签及源码==
+
+ -  \<mvc: view-controller  path="url"  view-name="默认|forward|redirect">
+
+ - \<mvc：annotation-driven>自动注册
+
+   - RequestMappingHanderMapping/RequestMappingHanderAdapter/ExceptionHanderExceptionRsolver
+
+   - BeanDefinitionParser
+     - propertyPlaceholderBeanDefinitionParser
+     - listBeanDefinitionParser/MapBeanDP/SetBeanDP
+     - AnnotationDrivenBeanDefinitionParser
+     - ViewControllerDefinitionParser
+
+ - 对@requestMapping注解的影响
+
+ - 对静态资源和动态资源的影响（主要看handlerMapping和handlerAdapters初始化的类变化）
+
+   - \<mvc:default-servlet-handler>对动态资源和静态资源的影响
+   - \<mvc:annotation-driven>对动态资源的影响
+
+#### ==1.4.5. 实验五：自定义视图解析器ViewResolver==
+
+- 写一个自定义视图解析器
+- 使用order接口指定其解析顺序
+- 打到源码断点去看实际情况
+- 反思spring的面向接口编程实现
+
+#### ==1.4.6. spring-mvc的CURD==
+
+- http请求带参转换成controller参数的经历过程
+  - 类型转换（string->integer/boolean/..）
+  - 数据绑定期间的数据格式化问题（日期）
+  - 数据校验合法性
+
+- webDataBinder绑定数据对象源码
+  - conversionService
+  - Validators
+  - bindingResult
+
+- 编写自定义一个类型转换器
+
+  - 自定义converter放入conversionService中
+
+  - 将webDataBinder中的conversionService设置成我们加了自定义类型转换器的voncersionService
+
+    - 配置conversionServiceFactoryBean中添加自定义的converter
+
+      \<bean>\<property>\<set>
+
+    - 使用\<mvc:annotation-driven conversion-service="转换器">使其生效
+
+- 解释为什么类型转换器有多个时候会优先使用自定义的类型转换器（源码）
+- 
+
+## 二、其他知识
+
+### 2.1. Spring知识
+
+- ==autowired 是实现原理（UML）==
+- ==bean生命周期源码及源码梳理（UML）==
+
+### 2.2. HTTP知识
+
+#### 2.2.1. 带宽：
+
+- 标识单位时间内通过链路的数据量（数据传输能力）
+- 通常以bps来表示，每秒可传输的位数（10^9bit/s=1Gbit/s=>1Gbps, 比特/秒）	
+
+#### 2.2.2. 全双工与半双工：
+
+- 全双工，AB之间可以同时进行数据传输，有两根不统的数传线传送
+- 交换机的全双工
+- 网卡的双公司模式
+
+#### 2.2.3. 重定向
+
+​	url转发，当一个资源被临时或者永久转移之后，可以通过原始的资源进行重定向转发，以达到访问最新资源的目的。
+
+a. 重定向几种情况
+
+- 301 mved permanently 永久性重定向
+- 302 found 临时性重定向
+- 303 see other 有于请求对应的资源存在着另一个URI，应使用GET方法定向获取请求的资源
+- 304 Not modified 资源未改变，可直接使用客户端未过期的缓存
+- 307 Temporary Redirect 临时重定向，区别302，不会发生将POST转换成GET请求。
+
+#### 2.2.4. REST风格
+
+​	一种规范，规范了请求动作，get/post/put/delete/head/option/trace/，根据请求方法的不同，对应服务器不一样的处理方法
+
+```
+原来：http://localhost:80/getUser?id=5
+Restful: GET http://localhost:80/user/5
+原来：http://localhost:80/deleteUser?id=5
+Restful: DELET http://localhost:80/user/5  
+```
+
+在spring中的应用：
+
+	- @RequsetBody 可以直接请求的资源实体自动转换成对应的model层对象
+	- 统一的响应结构{status:"200", mes: "success", data:{}}
+
+#### 2.2.5. websocket
+
+​	浏览器进行全双工通信！为了优化http通信而存在。
+
+	- 传统的http是无状态，针对资源更新只有客户端请求后，服务器才能进行推送，无法知道资源是否更新，只有客户端反复请求服务器，这样产生了大量的请求，消耗了大量的资源。
+
+-  可以通过ajax异步更新，此时虽然是局部更新，但是依然解决不了这个何时更新及时传输的问题。
+
+-  使用comet延迟应答，模拟实现服务器端向客户端推送功能，未能根本解决。
+
+- SPDY（speedy）可以改善这种情况，通过在”应用层“与”传输层“加上”会话层“（位于SSL之前）
+  - 赋予请求优先级
+  - 压缩http首部
+  - 推送功能
+  - 服务器提示功能
+
+- 使用wenSocket进行全双工通信
+  - 一旦web服务器与客户端之间建立起webSocket协议的通信连接，之后所有的通信都会依靠这个专用协议进行，通信过程中可互相发送任意资源
+
+![http与websocket](image\http与websocket.png)
+
+### 2.3. WEB知识
+
+#### ==2.3.1. servlet==
+
+### 2.4. JAVA基础
+
+- 装饰类整理和io流装饰类整理（xmind）
+
+- 复习动态代理
+
+- 复习异常常见类型（xmind）及finally执行返回、赋值与try return中返回值的关系（coding）
+
+### 2.5. 其他
+
+#### ==2.5.1. 查看认证权限的用户id是怎么带入到业务代码中的==
+
+
+
 ## 三、待办清单
 
 ### 3.1.重点知识待办
 
-- autowired 是实现原理（UML）
-- bean生命周期源码及源码梳理（UML）
-- 复习动态代理
-- 复习异常常见类型（xmind）及finally执行返回、赋值与try return中返回值的关系（coding）
-- 装饰类整理和io流装饰类整理（xmind）
-- REST风格
-- servlet
-- 重定向
-- 查看认证权限的用户id是怎么带入到业务代码中的
+- 
