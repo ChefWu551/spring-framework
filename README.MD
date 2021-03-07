@@ -259,7 +259,34 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
   
   - 视图解析其和渲染器ha.handle->processDispatherResult->render->viewResolver->resolveViewName->
 
-#### ==1.4.3. 实验三：重定向redirect和转发forward==
+#### 1.4.3. 实验三：重定向redirect和转发forward
+
+- 通过浏览器的F12可以看到forward是直接调用forward指定接口，转发请求
+
+  Request URL:  http://localhost:8080/forward
+
+  ```
+  Connection: keep-alive
+  Content-Language: zh-CN
+  Content-Length: 93
+  Content-Type: text/html;charset=UTF-8
+  Date: Sun, 07 Mar 2021 12:26:12 GMT
+  Keep-Alive: timeout=20
+  ```
+
+- redirect则经过了一层转发，后再次请求最后的重定向接口方法
+
+  Request URL:  http://localhost:8080/redirect => Request URL: http://localhost:8080/redirectPage
+
+  ```
+  Connection: keep-alive
+  Content-Language: zh-CN
+  Content-Length: 0
+  Date: Sun, 07 Mar 2021 12:26:34 GMT
+  Keep-Alive: timeout=20
+  -- 重定向接口，location 跳转
+  Location: redirectPage
+  ```
 
 #### ==1.4.4. 实验四：\<mvc>标签及源码==
 
@@ -289,7 +316,13 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 - 打到源码断点去看实际情况
 - 反思spring的面向接口编程实现
 
-#### ==1.4.6. spring-mvc的CURD==
+#### ==1.4.6. spring-mvc的数据绑定==
+
+```java
+dispatcherServlet.handlerMappings->dispatcherServlet.initHandlerMappings(ApplicationContext context)->BeanFacotryUtil.beansOfTypeIncludingAncestors->
+```
+
+
 
 - http请求带参转换成controller参数的经历过程
   - 类型转换（string->integer/boolean/..）
@@ -301,20 +334,93 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
   - Validators
   - bindingResult
 
-- 编写自定义一个类型转换器
+- 实现一个自定义类型转换器
+
+  ```xml
+  <!-- conversion-service="conversionService" 很重要！若不加，无法使转换器生效 -->
+  <mvc:annotation-driven conversion-service="conversionService"/>
+  
+  <bean class="org.springframework.context.support.ConversionServiceFactoryBean" id="conversionService">
+      <property name="converters">
+          <set>
+              <ref bean="bookParamConverter"/>
+          </set>
+      </property>
+  </bean>
+  
+  <bean id = "bookParamConverter" class="com.mountain.converter.BookParamConverter">
+  
+  </bean>
+  ```
 
   - 自定义converter放入conversionService中
 
-  - 将webDataBinder中的conversionService设置成我们加了自定义类型转换器的voncersionService
+    controller:
 
-    - 配置conversionServiceFactoryBean中添加自定义的converter
+    ```java
+    @Controller
+    public class BookController {
+        // http://localhost:8080/printBook?bookObject=xiyouji-wce-40
+    	// @RequestParam("bookObject") 对应请求url的值，这个很重要，否则无法定位到当前的controller所需要的参数
+        // 此时无法过自定义的convert类
+        // 若无标注，默认类名首字母小写
+        @RequestMapping("printBook")
+        public void getBook(@RequestParam("bookObject") Book book) {
+            System.out.println(book.toString());
+        }
+        
+        @RequestMapping("printString")
+        public void getBookString(Book book1) {
+            System.out.println(book1.toString());
+        }
+    }
+    ```
 
-      \<bean>\<property>\<set>
+    - 步骤一：继承converter接口
 
-    - 使用\<mvc:annotation-driven conversion-service="转换器">使其生效
+      ```java
+      public class BookParamConverter implements Converter<String, Book>, Ordered {
+      
+          @Override
+          public Book convert(String source) {
+              Book book = new Book();
+              String[] results = source.split("-");
+              book.setBookName(results[0]);
+              book.setAuthor(results[1]);
+              book.setAge(Integer.valueOf(results[2]));
+              return book;
+          }
+      
+          @Override
+          public int getOrder() {
+              return 1;
+          }
+      }
+      ```
 
-- 解释为什么类型转换器有多个时候会优先使用自定义的类型转换器（源码）
-- 
+  - 将webDataBinder中的conversionService设置成我们加了自定义类型转换器的conversionService
+
+    - 步骤二：配置conversionServiceFactoryBean中添加自定义的converter
+
+      ```xml
+      <bean class="org.springframework.context.support.ConversionServiceFactoryBean" id="conversionService">
+          <property name="converters">
+              <set>
+                  <bean id = "bookParamConverter" class="com.mountain.converter.BookParamConverter"/>
+              </set>
+          </property>
+      </bean>
+      ```
+
+    - 步骤三：使用\<mvc:annotation-driven conversion-service="转换器">使其生效
+
+      ```xml
+      <mvc:annotation-driven conversion-service="conversionService"/>
+      ```
+
+- 解释为什么类型转换器有多个时候会使用自定义的类型转换器（源码）
+
+  
 
 ## 二、其他知识
 
