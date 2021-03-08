@@ -21,6 +21,6 @@ public class BookParamConverter implements Converter<String, Book>, Ordered {
 
     @Override
     public int getOrder() {
-        return 1;
+        return HIGHEST_PRECEDENCE;
     }
 }

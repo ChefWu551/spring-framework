@@ -318,9 +318,19 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
 #### ==1.4.6. spring-mvc的数据绑定==
 
-```java
-dispatcherServlet.handlerMappings->dispatcherServlet.initHandlerMappings(ApplicationContext context)->BeanFacotryUtil.beansOfTypeIncludingAncestors->
-```
+- 绑定过程
+
+  - spring ioc容器启动，自动将类型转换器注入beanFactory中，对应ConverService
+
+  - 适配器handerAdapter根据请求的url对应到@RequestMapping的方法上面的参数
+
+  - 根据参数的情况对应converter的类型判断是否需要转换
+
+  - 若需要则转换，否则遍历下一个，若无适配的，直接使用默认的适配器DefaultConversionService
+
+    ```
+    DefaultConversionService->GenericConversionService->ConfigurableConversionService->ConversionService
+    ```
 
 
 
@@ -420,7 +430,22 @@ dispatcherServlet.handlerMappings->dispatcherServlet.initHandlerMappings(Applica
 
 - 解释为什么类型转换器有多个时候会使用自定义的类型转换器（源码）
 
-  
+  - ```java
+    // 获取获取请求方法适配器
+    HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+    ```
+
+  - 处理modelAndView对象，根据request对应的请求路径获取请求方法
+
+  - 反射获取请求方法的参数类型，若类型包含了需要转换的自定义converter则使用 
+
+    ```java
+    getTypeConverter().convertIfNecessary(value, requiredType, methodParam);
+    ```
+
+    进行对应适配器类型转换
+
+  - 最后通过GeneriConversionService.convert()->Converter<S, T>.convert()->BookParamConverter.convert()完成类型转换
 
 ## 二、其他知识
 
