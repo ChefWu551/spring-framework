@@ -316,7 +316,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 - 打到源码断点去看实际情况
 - 反思spring的面向接口编程实现
 
-#### ==1.4.6. spring-mvc的数据绑定==
+#### 1.4.6. spring-mvc的数据绑定
 
 - 绑定过程
 
@@ -328,16 +328,14 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
   - 若需要则转换，否则遍历下一个，若无适配的，直接使用默认的适配器DefaultConversionService
 
-    ```
+    ```java
     DefaultConversionService->GenericConversionService->ConfigurableConversionService->ConversionService
     ```
 
-
-
 - http请求带参转换成controller参数的经历过程
   - 类型转换（string->integer/boolean/..）
-  - 数据绑定期间的数据格式化问题（日期）
-  - 数据校验合法性
+  - ==数据绑定期间的数据格式化问题（日期）==
+  - ==数据校验合法性==
 
 - webDataBinder绑定数据对象源码
   - conversionService
@@ -526,7 +524,75 @@ Restful: DELET http://localhost:80/user/5
 
 - 复习动态代理
 
+  - JDK针对某个接口:
+    - Proxy.newInstance(ClassLoader loader, Class<?>[] interface, InvacationHandler hander)
+    - InvacationHandler<-invoke(Proxy proxy, Method method, Object[] args)
+
+  - Cglib针对某个具体的类:
+    - Enhancer eh = new Enhancer(); // 增强 
+    - enhancer.setSuperclass(class); // 若是接口则使用接口，否则是否是Object，否则使用其本身
+    - enhancer.setCallback(MethodInterceptor()); // 映射对应的回调方法
+    - (T) enhancer.create(); // 创建代理对象
+
 - 复习异常常见类型（xmind）及finally执行返回、赋值与try return中返回值的关系（coding）
+
+  - 异常类型
+
+    ![异常类型](image\异常类型.png)
+
+  - try finally 与 return
+
+    ```java
+    	方法一：
+    	// 无异常，执行顺序为 先执行finally但是返回value=10
+    	public static Integer getValueWithoutString() {
+            int value = 10;
+            try {
+                return value;
+            } finally {
+                value = 4;
+                System.out.println("无异常执行finally返回值：" + value);
+            }
+        }
+    	方法二：
+    	// 无异常，最后返回 7
+    	public static Integer getValueWithException() {
+            int value = 10;
+            try {
+                value = 5;
+                return value+1;
+            } finally {
+                return value+2;
+            }
+        }
+    	方法三：
+    	// 有异常，最后返回 1234 finally 
+    	public static String getStringWithException() {
+            String value = "1234";
+            try {
+                return value + " try ";
+            } finally {
+                return value + " finally ";
+            }
+        }
+    	方法四：
+    	// 有异常，最后返回 1234 try  finally 
+        public static String getStringWithoutException() {
+            String value = "1234";
+            try {
+                value = value + " try ";
+                return value;
+            } finally {
+                return value + " finally ";
+            }
+        }
+    ```
+
+    以上实例主要阐述了：
+
+    - 方法一和方法二中，在返回前会声明一个返回值的栈，当try执行return时，会把value值写入这个栈（基本类型），若finally中无return则此时返回值无需修改，直接返回即可；若finally中有return则返回修改的值；finally一定会在方法结束前执行！
+
+    - 方法一和方法四中：如果针对基本类型，返回的是实际的值是实现开辟好的基本类型的栈；若非基类，则返回的是对象的引用，因此会按照finally最后对象引用之返回！
 
 ### 2.5. 其他
 
