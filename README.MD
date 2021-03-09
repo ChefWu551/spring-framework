@@ -445,6 +445,14 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
   - 最后通过GeneriConversionService.convert()->Converter<S, T>.convert()->BookParamConverter.convert()完成类型转换
 
+#### 1.4.7. spring-@RequstBody与@RequestResponse
+
+#### 1.4.8. spring 文件上传与下载
+
+#### 1.4.9. 自定义HandlerFilter与源码解析
+
+
+
 ## 二、其他知识
 
 ### 2.1. Spring知识
@@ -516,7 +524,240 @@ Restful: DELET http://localhost:80/user/5
 
 ### 2.3. WEB知识
 
-#### ==2.3.1. servlet==
+#### 2.3.1. servlet
+
+​	a. 关于servlet解释：server applet 服务端的轻量级小程序
+
+​		tomcat的组成可以看成两部分，web服务器（将资源暴露到公网中以提供访问）和servlet（处理业务逻辑代码，后续又被分层，servlet+service+dao以提供解耦，等同于springmvc中的DispatcherServlet，而DispatcherServlet其实是继承了HttpServlet，只是在原来基础上又封装了一些逻辑）
+
+​	b. servlet(<-javax.servlet.GenericServlet[abstract]<-HttpServlet[abstract])的
+
+- servlet五个方法：
+
+```java
+ /*
+ * <li>The servlet is constructed, then initialized with the <code>init</code> method.
+ * <li>Any calls from clients to the <code>service</code> method are handled.
+ * <li>The servlet is taken out of service, then destroyed with the
+ * <code>destroy</code> method, then garbage collected and finalized.
+ * </ol>
+ */
+public interface Servlet {
+    /**
+     * Called by the servlet container to indicate to a servlet that the
+     * servlet is being placed into service.
+     *
+     * <p>The servlet container calls the <code>init</code>
+     * method exactly once after instantiating the servlet.
+     * The <code>init</code> method must complete successfully
+     * before the servlet can receive any requests.
+     *
+     * <p>The servlet container cannot place the servlet into service
+     * if the <code>init</code> method
+     * <ol>
+     * <li>Throws a <code>ServletException</code>
+     * <li>Does not return within a time period defined by the Web server
+     * </ol>
+     *
+     *
+     * @param config a <code>ServletConfig</code> object
+     * containing the servlet's configuration and initialization parameters
+     *
+     * @exception ServletException if an exception has occurred that
+     * interferes with the servlet's normal operation
+     *
+     * @see UnavailableException
+     * @see #getServletConfig
+     */
+    public void init(ServletConfig config) throws ServletException;
+
+    /**
+     * Returns a {@link ServletConfig} object, which contains
+     * initialization and startup parameters for this servlet.
+     * The <code>ServletConfig</code> object returned is the one
+     * passed to the <code>init</code> method.
+     *
+     * <p>Implementations of this interface are responsible for storing the
+     * <code>ServletConfig</code> object so that this
+     * method can return it. The {@link GenericServlet}
+     * class, which implements this interface, already does this.
+     *
+     * @return the <code>ServletConfig</code> object
+     * that initializes this servlet
+     *
+     * <p>In addition to the life-cycle methods, this interface
+     * provides the <code>getServletConfig</code> method, which the servlet
+     * can use to get any startup information, and the <code>getServletInfo</code>
+     * method, which allows the servlet to return basic information about itself,
+     * such as author, version, and copyright.
+     */
+    // 返回一个servletConfig对象，里面包含了servlet的基本信息
+    public ServletConfig getServletConfig();
+    
+    ```
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!--bean的配置文件位置在初始化时候进行加载,否则注入bean失败,ioc容器中不会有相应的bean组件的!-->
+        <!--servlet的ServletConfig对象信息，在这里直接初始化了-->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/applicationContext.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>    
+    ```
+
+    /**
+     * Called by the servlet container to allow the servlet to respond to
+     * a request.
+     *
+     * <p>This method is only called after the servlet's <code>init()</code>
+     * method has completed successfully.
+     *
+     * <p>  The status code of the response always should be set for a servlet
+     * that throws or sends an error.
+     *
+     * <p>Servlets typically run inside multithreaded servlet containers
+     * that can handle multiple requests concurrently. Developers must
+     * be aware to synchronize access to any shared resources such as files,
+     * network connections, and as well as the servlet's class and instance
+     * variables.
+     * More information on multithreaded programming in Java is available in
+     * <a href="http://java.sun.com/Series/Tutorial/java/threads/multithreaded.html">
+     * the Java tutorial on multi-threaded programming</a>.
+     *
+     *
+     * @param req the <code>ServletRequest</code> object that contains
+     * the client's request
+     *
+     * @param res the <code>ServletResponse</code> object that contains
+     * the servlet's response
+     *
+     * @exception ServletException if an exception occurs that interferes
+     * with the servlet's normal operation
+     *
+     * @exception IOException if an input or output exception occurs
+     */
+    // 每次请求到来时调用
+    public void service(ServletRequest req, ServletResponse res)
+            throws ServletException, IOException;
+
+    /**
+     * Returns information about the servlet, such
+     * as author, version, and copyright.
+     *
+     * <p>The string that this method returns should
+     * be plain text and not markup of any kind (such as HTML, XML,
+     * etc.).
+     *
+     * @return a <code>String</code> containing servlet information
+     */
+    public String getServletInfo();
+
+    /**
+     * Called by the servlet container to indicate to a servlet that the
+     * servlet is being taken out of service.  This method is
+     * only called once all threads within the servlet's
+     * <code>service</code> method have exited or after a timeout
+     * period has passed. After the servlet container calls this
+     * method, it will not call the <code>service</code> method again
+     * on this servlet.
+     *
+     * <p>This method gives the servlet an opportunity
+     * to clean up any resources that are being held (for example, memory,
+     * file handles, threads) and make sure that any persistent state is
+     * synchronized with the servlet's current state in memory.
+     */
+    public void destroy();
+}
+
+```
+
+#### 2.3.2. javaweb三大组件
+
+ - Servlet
+
+   servlet(<-javax.servlet.GenericServlet[abstract]<-HttpServlet[abstract])
+
+   - 因为GnericServlet和HttpServlet都是抽象方法，所以不提供实例话，springmvc通过FrameworkServlet 重写了HttpServlet的两个个请求方法doGet/doPost
+
+     - 若没有重写这些方法
+
+       ```java
+       /**
+        * Provides an abstract class to be subclassed to create
+        * an HTTP servlet suitable for a Web site. A subclass of
+        * <code>HttpServlet</code> must override at least
+        * one method, 
+        
+        * <p>There's almost no reason to override the <code>service</code>
+        * method. <code>service</code> handles standard HTTP
+        * requests by dispatching them to the handler methods
+        * for each HTTP request type (the <code>do</code><i>XXX</i>
+        * methods listed above).
+        */
+       public abstract class HttpServlet extends GenericServlet
+               implements java.io.Serializable {
+       // HttpServletResponse.SC_METHOD_NOT_ALLOWED 405
+       // HttpServletResponse.SC_BAD_REQUEST 400
+       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+                   throws ServletException, IOException {
+               String protocol = req.getProtocol();
+               String msg = lStrings.getString("http.method_get_not_supported");
+               if (protocol.endsWith("1.1")) {
+                   resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, msg);
+               } else {
+                   resp.sendError(HttpServletResponse.SC_BAD_REQUEST, msg);
+               }
+           }
+       }
+       ```
+
+ - Filter
+
+   用到了责任链模式
+
+ - Listener
+
+   观察者模式
+
+- spring-mvc使用tomcat启动三大组件关系
+
+  web.xml
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+           version="4.0">
+      <listener>
+          <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+      </listener>
+      <servlet>
+          <servlet-name>dispatcher</servlet-name>
+          <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+          <!--bean的配置文件位置在初始化时候进行加载,否则注入bean失败,ioc容器中不会有相应的bean组件的!-->
+          <!--servlet的ServletConfig对象信息，在这里直接初始化了-->
+          <init-param>
+              <param-name>contextConfigLocation</param-name>
+              <param-value>/WEB-INF/applicationContext.xml</param-value>
+          </init-param>
+          <load-on-startup>1</load-on-startup>
+      </servlet>
+      <servlet-mapping>
+          <servlet-name>dispatcher</servlet-name>
+          <url-pattern>/</url-pattern>
+      </servlet-mapping>
+  </web-app>
+  ```
+
+  
+
+  
+
+  ![tomcat执行伪代码](image\tomcat执行伪代码.jpg)![tomcat内部组件执行顺序](image\tomcat内部组件执行顺序.png)
 
 ### 2.4. JAVA基础
 
@@ -598,7 +839,7 @@ Restful: DELET http://localhost:80/user/5
 
 #### ==2.5.1. 查看认证权限的用户id是怎么带入到业务代码中的==
 
-
+#### ==2.5.2. 模板方法模式==
 
 ## 三、待办清单
 

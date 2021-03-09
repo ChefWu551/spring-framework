@@ -10,6 +10,7 @@
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <!--bean的配置文件位置在初始化时候进行加载,否则注入bean失败,ioc容器中不会有相应的bean组件的!-->
+        <!--servlet的ServletConfig对象信息，在这里直接初始化了-->
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>/WEB-INF/applicationContext.xml</param-value>
