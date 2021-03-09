@@ -316,7 +316,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 - 打到源码断点去看实际情况
 - 反思spring的面向接口编程实现
 
-#### 1.4.6. spring-mvc的数据绑定
+#### ==1.4.6. spring-mvc的数据绑定==
 
 - 绑定过程
 
@@ -445,11 +445,145 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
   - 最后通过GeneriConversionService.convert()->Converter<S, T>.convert()->BookParamConverter.convert()完成类型转换
 
-#### 1.4.7. spring-@RequstBody与@RequestResponse
+#### ==1.4.7. spring-@RequstBody与@RequestResponse==
 
-#### 1.4.8. spring 文件上传与下载
+#### ==1.4.8. spring 文件上传与下载==
 
-#### 1.4.9. 自定义HandlerFilter与源码解析
+#### 1.4.9. 自定义HandlerInterceptor与源码解析
+
+- 步骤一：编写拦截器代码，继承HandlerInterceptor
+
+  ```java
+  public class MyHandlerFilter implements HandlerInterceptor {
+  
+      @Override
+      public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+              throws Exception {
+          System.out.println("MyHandlerFilter...preHandle");
+          return true;
+      }
+  
+      @Override
+      public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                             @Nullable ModelAndView modelAndView) throws Exception {
+          System.out.println("MyHandlerFilter...postHandle");
+      }
+  
+      @Override
+      public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                  @Nullable Exception ex) throws Exception {
+          System.out.println("MyHandlerFilter...afterCompletion");
+      }
+  }
+  ```
+
+- 步骤二：配置到spring-mvc中
+
+```xml
+<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/interceptor"/>
+            <bean class="com.mountain.filter.MySencondHandlerFilter"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/interceptor"/>
+            <bean class="com.mountain.filter.MyHandlerFilter"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+```
+
+- 源码分析
+
+  ```java
+  protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  		HttpServletRequest processedRequest = request;
+  		HandlerExecutionChain mappedHandler = null;
+  		boolean multipartRequestParsed = false;
+  
+  		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+  
+  		try {
+  			ModelAndView mv = null;
+  			Exception dispatchException = null;
+  
+  			try {
+  				processedRequest = checkMultipart(request);
+  				multipartRequestParsed = (processedRequest != request);
+  
+  				// Determine handler for the current request.
+                  // 这里获取方法执行链，HandlerExecutionChain mappedHandler 里面包含了拦截器的对象
+  				mappedHandler = getHandler(processedRequest);
+  				if (mappedHandler == null) {
+  					noHandlerFound(processedRequest, response);
+  					return;
+  				}
+  
+  				// Determine handler adapter for the current request.
+  				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+  
+  				// Process last-modified header, if supported by the handler.
+  				String method = request.getMethod();
+  				boolean isGet = "GET".equals(method);
+  				if (isGet || "HEAD".equals(method)) {
+  					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
+  					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
+  						return;
+  					}
+  				}
+  				// 执行前置拦截器，此时顺序是按照事先声明好的拦截器顺序执行
+                  // this.interceptorIndex 对拦截器的个数进行了统计并保存了起来，等后置拦截器执行时候是使用逆序执行
+  				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+  					return;
+  				}
+  
+  				// Actually invoke the handler.
+  				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+  
+  				if (asyncManager.isConcurrentHandlingStarted()) {
+  					return;
+  				}
+  
+  				applyDefaultViewName(processedRequest, mv);
+                  // 调用后置处理器方法，若有异常则不会执行，这时候是按照逆序来执行的，具体看源码
+  				mappedHandler.applyPostHandle(processedRequest, response, mv);
+  			}
+  			catch (Exception ex) {
+  				dispatchException = ex;
+  			}
+  			catch (Throwable err) {
+  				// As of 4.3, we're processing Errors thrown from handler methods as well,
+  				// making them available for @ExceptionHandler methods and other scenarios.
+  				dispatchException = new NestedServletException("Handler dispatch failed", err);
+  			}
+              // 渲染视图，若执行非异常直接调用AfterCopletion拦截器的方法，若异常则不会执行
+  			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+  		}
+  		catch (Exception ex) {
+              // 此时这时候这里会执行AfterCopletion拦截器的方法
+  			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
+  		}
+  		catch (Throwable err) {
+  			triggerAfterCompletion(processedRequest, response, mappedHandler,
+  					new NestedServletException("Handler processing failed", err));
+  		}
+  		finally {
+  			if (asyncManager.isConcurrentHandlingStarted()) {
+  				// Instead of postHandle and afterCompletion
+  				if (mappedHandler != null) {
+  					mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
+  				}
+  			}
+  			else {
+  				// Clean up any resources used by a multipart request.
+  				if (multipartRequestParsed) {
+  					cleanupMultipart(processedRequest);
+  				}
+  			}
+  		}
+  	}
+  ```
+
+  综上，无论如何，
 
 
 

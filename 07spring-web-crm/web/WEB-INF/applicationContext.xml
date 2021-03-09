@@ -30,4 +30,15 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/interceptor"/>
+            <bean class="com.mountain.filter.MySencondHandlerFilter"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/interceptor"/>
+            <bean class="com.mountain.filter.MyHandlerFilter"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 </beans>
