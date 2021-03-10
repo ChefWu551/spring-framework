@@ -585,8 +585,6 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
   综上，无论如何，
 
-
-
 ## 二、其他知识
 
 ### 2.1. Spring知识
@@ -728,7 +726,7 @@ public interface Servlet {
     // 返回一个servletConfig对象，里面包含了servlet的基本信息
     public ServletConfig getServletConfig();
     
-    ```
+```
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -741,7 +739,7 @@ public interface Servlet {
         <load-on-startup>1</load-on-startup>
     </servlet>    
     ```
-
+    
     /**
      * Called by the servlet container to allow the servlet to respond to
      * a request.
@@ -776,7 +774,7 @@ public interface Servlet {
     // 每次请求到来时调用
     public void service(ServletRequest req, ServletResponse res)
             throws ServletException, IOException;
-
+    
     /**
      * Returns information about the servlet, such
      * as author, version, and copyright.
@@ -788,7 +786,7 @@ public interface Servlet {
      * @return a <code>String</code> containing servlet information
      */
     public String getServletInfo();
-
+    
     /**
      * Called by the servlet container to indicate to a servlet that the
      * servlet is being taken out of service.  This method is
@@ -846,7 +844,7 @@ public interface Servlet {
                }
            }
        }
-       ```
+```
 
  - Filter
 
@@ -971,11 +969,32 @@ public interface Servlet {
 
 ### 2.5. 其他
 
-#### ==2.5.1. 查看认证权限的用户id是怎么带入到业务代码中的==
+#### 2.5.1. 查看认证权限的用户id是怎么带入到业务代码中的
 
-#### ==2.5.2. 模板方法模式==
+​	通过实现Filter接口，重写doFilter方法，获取请求头的token信息，然后解析token获取userid后重新set到parameterRequestWrapper（是HttpServletRequest的实现类）对象中
 
-## 三、待办清单
+## 三、设计模式
+
+### 3.1. 工厂模式
+
+- 多种工厂模式梳理
+
+### 3.2. 模板方法模式
+
+​	定义了执行的框架，将一些步骤延迟到之类中，模板方法使得子类可以在不改变算法结构的情况下重新定义算法中的某些步骤。
+
+**特点：**
+
+	- 框架规范了算法执行的顺序
+	- 对需要重写的子类提供了开放，可以针对不同业务逻辑定制自己的处理方法
+	- 提供了hook功能，根据子类选择需要执行的方法
+
+**比较常用的情景：**
+
+	- 实现comparable接口的，使用Arrays.sort()自定义排序
+	- servlet的五个方法，httpServlet被springframeworkServlet实现改写
+
+## 四、待办清单
 
 ### 3.1.重点知识待办
 
