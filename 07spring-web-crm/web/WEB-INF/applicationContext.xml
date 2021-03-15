@@ -33,12 +33,13 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/interceptor"/>
-            <bean class="com.mountain.filter.MySencondHandlerFilter"/>
+            <bean class="com.mountain.interceptor.MySencondHandlerInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/interceptor"/>
-            <bean class="com.mountain.filter.MyHandlerFilter"/>
+            <bean class="com.mountain.interceptor.MyHandlerInterceptor"/>
         </mvc:interceptor>
+
     </mvc:interceptors>
 
 </beans>

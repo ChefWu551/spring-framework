@@ -454,25 +454,25 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 - 步骤一：编写拦截器代码，继承HandlerInterceptor
 
   ```java
-  public class MyHandlerFilter implements HandlerInterceptor {
+  public class MyHandlerInterceptor implements HandlerInterceptor {
   
       @Override
       public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
               throws Exception {
-          System.out.println("MyHandlerFilter...preHandle");
+          System.out.println("MyHandlerInterceptor...preHandle");
           return true;
       }
   
       @Override
       public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                              @Nullable ModelAndView modelAndView) throws Exception {
-          System.out.println("MyHandlerFilter...postHandle");
+          System.out.println("MyHandlerInterceptor...postHandle");
       }
   
       @Override
       public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                   @Nullable Exception ex) throws Exception {
-          System.out.println("MyHandlerFilter...afterCompletion");
+          System.out.println("MyHandlerInterceptor...afterCompletion");
       }
   }
   ```
@@ -483,11 +483,11 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/interceptor"/>
-            <bean class="com.mountain.filter.MySencondHandlerFilter"/>
+            <bean class="com.mountain.interceptor.MySencondHandlerInterceptor"/>
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/interceptor"/>
-            <bean class="com.mountain.filter.MyHandlerFilter"/>
+            <bean class="com.mountain.interceptor.MyHandlerInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 ```
@@ -585,7 +585,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
   综上，无论如何，再拦截器执行后，AfterCompletion 是一定会被执行的。
 
-#### 1.4.10. 国际化ResourceBudleMessageSource
+#### ==1.4.10. 国际化ResourceBudleMessageSource==
 
 - 配置bean实现返回内容国际化
 - 更改浏览器语言测试功能
@@ -595,7 +595,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
   - 使用httpResquestServlet
   - 使用 Local对象
 
-#### 1.4.11. spring异常HandlerExceptionResolver
+#### ==1.4.11. spring异常HandlerExceptionResolver==
 
 - 三种默认异常
 
@@ -614,11 +614,11 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
    - 看以上异常捕获生效情况
    - 使用@ResponseStatus定义返回自定义内容
 
-#### 1.4.12.梳理spring-mvc 运行流程
+#### ==1.4.12.梳理spring-mvc 运行流程==
 
 doDispatch->往后
 
-#### 1.4.13.spring-mvc整合spring框架
+#### ==1.4.13.spring-mvc整合spring框架==
 
 - 多个ioc容器执行
 - 两个ioc容器配合执行
@@ -633,8 +633,10 @@ doDispatch->往后
 - ==autowired 是实现原理（UML）==
 - ==bean生命周期源码及源码梳理（UML）==
 - ==spring中 Filter和Interceptor的使用和区别==
-  - filter为java web自带的组件，功能比较单一
-  - interceptor是ioc组件，有多种处理方式，preHandler、postHandler、afterCompletionHandler
+  - filter为java web自带的组件(javax.servlet.Filter)，功能比较单一，且必须使用web.xml进行配置，因为他是非ioc组件不能通过@Component来初始化到ioc容器内
+  - interceptor是ioc组件，有多种处理方式，preHandler、postHandler、afterCompletion
+
+- controller和restController的区别
 
 ### 2.3. WEB知识
 

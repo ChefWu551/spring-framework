@@ -3,8 +3,11 @@ package com.mountain;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * 拦截器使用
+ */
 @Controller
-public class FilterInterceptorController {
+public class InterceptorController {
 
     @RequestMapping("interceptor")
     public String interceptor() {

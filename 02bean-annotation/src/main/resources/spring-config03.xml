@@ -34,9 +34,9 @@
         实验三：使用context:exclude-filter指定扫描包是不包含的类
             type 类型含义
             - type="annotation": 指定排除规则，按照注解进行排除，标注了指定注解的组件不要 expression="" 注解的全类名
-                <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+                <context:exclude-interceptor type="annotation" expression="org.springframework.stereotype.Service"/>
             - type="assignable": 指定排除某个具体的类，按照类排除 expression="" 类的全类名
-                <context:exclude-filter type="assignable" expression="com.com.mountain.service.serviceImpl.ServiceTest"/>
+                <context:exclude-interceptor type="assignable" expression="com.com.mountain.service.serviceImpl.ServiceTest"/>
             - type="aspectj"
             - type="custom"
             - type="regex"
@@ -44,8 +44,8 @@
         -->
 
     <!--<context:component-scan base-package="com.com.mountain">
-        <context:exclude-filter type="assignable" expression="com.com.mountain.service.serviceImpl.ServiceTest"/>
-        &lt;!&ndash;<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>&ndash;&gt;
+        <context:exclude-interceptor type="assignable" expression="com.com.mountain.service.serviceImpl.ServiceTest"/>
+        &lt;!&ndash;<context:include-interceptor type="annotation" expression="org.springframework.stereotype.Service"/>&ndash;&gt;
     </context:component-scan>-->
 
     <!--
