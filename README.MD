@@ -583,7 +583,48 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
   	}
   ```
 
-  综上，无论如何，
+  综上，无论如何，再拦截器执行后，AfterCompletion 是一定会被执行的。
+
+#### 1.4.10. 国际化ResourceBudleMessageSource
+
+- 配置bean实现返回内容国际化
+- 更改浏览器语言测试功能
+- 源码调试页面渲染该过程
+- 在controller层使用MessageResolver获取对象，使用getMessage获取不统语言的调试
+- 根据入参不同（zh/eng） 返回对应国际化的内容的两种方式
+  - 使用httpResquestServlet
+  - 使用 Local对象
+
+#### 1.4.11. spring异常HandlerExceptionResolver
+
+- 三种默认异常
+
+  - ExceptionHandlerExceptionResolver
+
+  - ResponseStatusExceptionResolver
+
+  - DefaultHandlerExceptionResolver
+
+ - 源码调试
+
+ - 自定义异常@ExceptionHandler/@ControllerAdvice
+
+   - 标注在业务类上面@ExceptionHandler
+   - 抽象成通用异常处理@ControllerAdvice
+   - 看以上异常捕获生效情况
+   - 使用@ResponseStatus定义返回自定义内容
+
+#### 1.4.12.梳理spring-mvc 运行流程
+
+doDispatch->往后
+
+#### 1.4.13.spring-mvc整合spring框架
+
+- 多个ioc容器执行
+- 两个ioc容器配合执行
+- 父子容器执行依赖注入关系
+
+#### 
 
 ## 二、其他知识
 
@@ -592,8 +633,8 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 - ==autowired 是实现原理（UML）==
 - ==bean生命周期源码及源码梳理（UML）==
 - ==spring中 Filter和Interceptor的使用和区别==
-
-
+  - filter为java web自带的组件，功能比较单一
+  - interceptor是ioc组件，有多种处理方式，preHandler、postHandler、afterCompletionHandler
 
 ### 2.3. WEB知识
 
@@ -940,3 +981,4 @@ public interface Servlet {
 ### 3.1.重点知识待办
 
 - 
+
