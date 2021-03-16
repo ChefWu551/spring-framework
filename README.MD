@@ -445,7 +445,62 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
   - 最后通过GeneriConversionService.convert()->Converter<S, T>.convert()->BookParamConverter.convert()完成类型转换
 
-#### ==1.4.7. spring-@RequstBody与@RequestResponse==
+  #### 
+
+#### 1.4.7. spring-@RequestBody与@ResponseBody
+
+- @RequestBody
+
+  ```java
+  
+  /**
+   * Annotation indicating a method parameter should be bound to the body of the web request.
+   * The body of the request is passed through an {@link HttpMessageConverter} to resolve the
+   * method argument depending on the content type of the request. Optionally, automatic
+   * validation can be applied by annotating the argument with {@code @Valid}.
+   *
+   * <p>Supported for annotated handler methods.
+   *
+   * @author Arjen Poutsma
+   * @since 3.0
+   * @see RequestHeader
+   * @see ResponseBody
+   * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+   */
+  
+  @Target(ElementType.PARAMETER)
+  @Retention(RetentionPolicy.RUNTIME)
+  @Documented
+  public @interface RequestBody {
+  ```
+
+  - 使用目标是请求的参数，将请求的参数组装成对象
+  - 使用注意事项：
+    - 需要声明请求体是json格式：HEADER: Content-Type:application/json
+    - 需要引入jsckson来对消息转换做支持，否则提示方法报错。
+
+- @ResponseBody
+
+  ```java
+  /**
+   * Annotation that indicates a method return value should be bound to the web
+   * response body. Supported for annotated handler methods.
+   *
+   * <p>As of version 4.0 this annotation can also be added on the type level in
+   * which case it is inherited and does not need to be added on the method level.
+   *
+   * @author Arjen Poutsma
+   * @since 3.0
+   * @see RequestBody
+   * @see RestController
+   */
+  @Target({ElementType.TYPE, ElementType.METHOD})
+  @Retention(RetentionPolicy.RUNTIME)
+  @Documented
+  public @interface ResponseBody {
+  ```
+
+  - 用于标注返回值的，直接返回结果
 
 #### ==1.4.8. spring 文件上传与下载==
 
@@ -636,7 +691,56 @@ doDispatch->往后
   - filter为java web自带的组件(javax.servlet.Filter)，功能比较单一，且必须使用web.xml进行配置，因为他是非ioc组件不能通过@Component来初始化到ioc容器内
   - interceptor是ioc组件，有多种处理方式，preHandler、postHandler、afterCompletion
 
-- controller和restController的区别
+- @RequestParam和@PathVariable的区别
+
+  - @RequestParam：简单的说，就是用来映射请求参数的，若请求参数是个map对象会自动生成对应的key和value
+
+    ```java
+    /**
+     * Annotation which indicates that a method parameter should be bound to a web
+     * request parameter.
+     *
+     * <p>Supported for annotated handler methods in Spring MVC and Spring WebFlux
+     * as follows:
+     */
+    
+    ```
+
+  - @PathVariable 从uri中获取请求参数，符合rest api的请求风格(should be bound to a URI template variable)
+
+    ```java
+    /**
+     * Annotation which indicates that a method parameter should be bound to a URI template
+     * variable. Supported for {@link RequestMapping} annotated handler methods.
+     *
+     * <p>If the method parameter is {@link java.util.Map Map&lt;String, String&gt;}
+     * then the map is populated with all path variable names and values.
+     */
+    @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    public @interface PathVariable {
+    ```
+
+    ```java
+    // 使用示例
+    @RequestMapping("pathVariable/{name}")
+    public JSONObject pathVariable(@PathVariable String name, @PathVariable Map<String, Integer> character) {
+        System.out.println("name: " + name + "; character: " + character);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", "王刚");
+        jsonObject.put("age", 23);
+        return jsonObject;
+    }
+    ```
+
+- @Controller和@RestController的区别
+
+  - @Controller 控制器，是component组件中的一种，用于声明当前的类是一个控制器（web控制器）
+  - @RestController
+    - 继承了@Controller控制器
+    - 继承了@ResponseBody控制器
+    - 综上两点，就很能说明问题了，带有controller控制器的属性，且直接返回的是请求体内容，而不是某个具体的页面。
 
 ### 2.3. WEB知识
 

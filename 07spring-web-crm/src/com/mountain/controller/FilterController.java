@@ -1,4 +1,4 @@
-package com.mountain;
+package com.mountain.controller;
 
 import com.mountain.exception.AuthException;
 import org.springframework.stereotype.Controller;
