@@ -32,13 +32,13 @@
         <constructor-arg value="authorValue" index="1"/>
         <constructor-arg value="12" index="2"/>
     </bean>
-    <bean id="bookNewInstance" class="com.com.mountain.factory.NewInstanceFactory">
+    <bean id="bookNewInstance" class="com.mountain.factory.NewInstanceFactory">
     </bean>
 
     <!--
         任务二：为bean初始化过程添加后置处理器，继承BeanPostProcessor
     -->
-    <bean id="beanPostProcessor" class="com.com.mountain.processor.MyBeanPostProcessor"/>
+    <bean id="beanPostProcessor" class="com.mountain.processor.MyBeanPostProcessor"/>
 
     <!--
         任务三：SPLE语法知识

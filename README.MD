@@ -6,13 +6,199 @@
 #### 1.1.1. xml 篇
 
 - 实验一：bean初始化及标签scope的使用；
+
+  - bean初始化对象时，-<property>标签声明的属性对应的属性值是直接调用getter和setter的，而不是通过构造方法来实现的
+
+    property赋值属性源码调用链：
+
+    ClassPathXmlApplicationContext 加载所有的xml配置的组件信息，里面包含了bean的初始化，运行构造方法，调用refresh()来解析xml，获取对应的bean信息，调用beanFactory.preInstantiateSingletons()来初始化所有非懒加载的单例bean，判断是否是工厂bean，若不是，直接通过getBean来获取对应的bean信息，getBean会从
+
+    ```java
+    /** Cache of early singleton objects: bean name to bean instance. */
+    private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
+    ```
+
+    以上 二级缓存中获取是否含有bean，若没有则会调用doCreateBean()来创建对应的bean信息，随后通过BeanWrapper bw对象的setPropertyValues()对对象的属性进行赋值，这一过程是通过反射调用对象方法set属性值进行赋值的。
+
+    调用链代码：
+
+    ```apl
+    refresh()->beanFactory.preInstantiateSingletons()->getBean(beanName);->doGetBean(name, null, null, false);
+    ->singletonFactory.getObject();->doCreateBean(beanName, mbdToUse, args);->applyPropertyValues(beanName, mbd, bw, pvs);
+    ->bw.setPropertyValues(new MutablePropertyValues(deepCopy));->ma.invoke(obj, args);
+    ```
+
+  - bean初始化对象时，-<constructor-arg>标签对应的是构造方法的有参个数，必须一一对应，否则编译错误
+
 - 实验二：构造方法初始化bean及标签index顺序赋值使用；
+
+  ```xml
+  <bean class="com.mountain.model.BookNum" id="book01">
+      <constructor-arg value="红楼梦" index="0"/>
+      <constructor-arg value="曹雪芹" index="1"/>
+      <constructor-arg value="45" index="2"/>
+  </bean>
+  ```
+
 - 实验三：泛型容器的赋值**list、map、List<Object>;**标签ref的外部引用；parent继承属性及修改对应的bean属性值[指向性，所以当重新对对象赋值后，原对象的属性值也会跟着改变]；
+
+  ```xml
+  <bean class="com.mountain.model.Person" id="person01">
+      <property name="lastName" value="小明"/>
+      <property name="age" value="12"/>
+      <property name="list">
+          <list>
+              <value>123</value>
+              <value>book</value>
+          </list>
+      </property>
+      <property name="maps">
+          <map>
+              <entry key="key1" value="value1"/>
+              <entry key="key2" value="value2"/>
+              <!--<entry key="key3" key-ref="book" value=""></entry>-->
+          </map>
+      </property>
+      <!--可直接声明引用，引用的是同一对象，可修改对象的属性值-->
+      <!--<property name="book" ref="book01">-->
+      <property name="book">
+          <!--parent：对某个bean的引用，相当于类的extend，不是同一个对象！-->
+          <bean class="com.mountain.model.Book" parent="book">
+              <property name="bookName" value="西游记"/>
+              <property name="age" value="13"/>
+          </bean>
+      </property>
+      <property name="books">
+          <list>
+              <bean class="com.mountain.model.Book">
+                  <property name="bookName" value="books01"/>
+                  <property name="author" value="author01"/>
+              </bean>
+              <bean class="com.mountain.model.Book">
+                  <property name="bookName" value="books02"/>
+                  <property name="age" value="100"/>
+              </bean>
+          </list>
+      </property>
+  </bean>
+  ```
+
 - 实验四：abstract声明true时候不会生成对应的bean，此时对象只能作为模板，被其他bean所引用；
+
+  ```xml
+  <bean class="com.mountain.model.BookNum" id="bookTemplate" abstract="true">
+      <constructor-arg value="bookNameTemp"/>
+      <constructor-arg value="authorTemp"/>
+      <constructor-arg value="12"/>
+  </bean>
+  ```
+
+  拓展：这里就是实验一中提到的：
+
+  ```java
+  public void preInstantiateSingletons() throws BeansException {
+     if (logger.isTraceEnabled()) {
+        logger.trace("Pre-instantiating singletons in " + this);
+     }
+  
+     // Iterate over a copy to allow for init methods which in turn register new bean definitions.
+     // While this may not be part of the regular factory bootstrap, it does otherwise work fine.
+     List<String> beanNames = new ArrayList<>(this.beanDefinitionNames);
+  
+     // Trigger initialization of all non-lazy singleton beans...
+     for (String beanName : beanNames) {
+        RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+         // 执行在这里，因为声明的是个抽象的模板bean
+        if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+           if (isFactoryBean(beanName)) {
+              Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
+              if (bean instanceof FactoryBean) {
+                 final FactoryBean<?> factory = (FactoryBean<?>) bean;
+                 boolean isEagerInit;
+                 if (System.getSecurityManager() != null && factory instanceof SmartFactoryBean) {
+                    isEagerInit = AccessController.doPrivileged((PrivilegedAction<Boolean>)
+                                ((SmartFactoryBean<?>) factory)::isEagerInit,
+                          getAccessControlContext());
+                 }
+                 else {
+                    isEagerInit = (factory instanceof SmartFactoryBean &&
+                          ((SmartFactoryBean<?>) factory).isEagerInit());
+                 }
+                 if (isEagerInit) {
+                    getBean(beanName);
+                 }
+              }
+           }
+           else {
+              getBean(beanName);
+           }
+        }
+     }
+  
+     // Trigger post-initialization callback for all applicable beans...
+     for (String beanName : beanNames) {
+        Object singletonInstance = getSingleton(beanName);
+        if (singletonInstance instanceof SmartInitializingSingleton) {
+           final SmartInitializingSingleton smartSingleton = (SmartInitializingSingleton) singletonInstance;
+           if (System.getSecurityManager() != null) {
+              AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                 smartSingleton.afterSingletonsInstantiated();
+                 return null;
+              }, getAccessControlContext());
+           }
+           else {
+              smartSingleton.afterSingletonsInstantiated();
+           }
+        }
+     }
+  }
+  ```
+
 - 实验五：三种初始化bean的方法：静态工厂方法、实例化工厂方法、bean的直接初始化；bean的生命周期；
+
+  - 静态工程方法
+
+    通过静态方法直接getInstance，获取一个new的对象即可
+
+    ```java
+    public static Book getBookInstance(String bookName) {
+        System.out.println("静态工厂方法执行");
+        return new Book(bookName);
+    }
+    ```
+
+  - 实例工厂方法
+
+    ```java
+    public Book getInstance(String bookName, String author, int age) {
+        return new Book(bookName, author, age);
+    }
+    ```
+
+    通过实例对象，获取一个new方法来实现
+
+  - bean的直接初始化
+
+    直接new一个自己，或者在bean中配置都可以
+
+  - **==bean的生命周期==**
+
 - 实验六：为bean初始化过程添加后置处理器，继承BeanPostProcessor
+
+  - 主导bean生成前该做什么，bean生成后又改做什么
+  - 实现：
+    - 实现BeanPostProcessor
+    - 添加@Component注解告诉bean这是个一个组件或者在xml中配置对应的组件即可（工厂模式，工厂模式很重要！）
+
 - 实验七：SpLE(spring expression language)语法知识
+
+  - ${book.name}引用
+  - #{50*20}带计算表达式
+
 - 实验八：基于xml的自动装配，autowire标签
+
+  - 原理：利用反射扫描实现对引用对象的初始化
+  - ==源码：==
 
 #### 1.1.2. 注解篇
 
@@ -1081,6 +1267,11 @@ public interface Servlet {
 
 	- 实现comparable接口的，使用Arrays.sort()自定义排序
 	- servlet的五个方法，httpServlet被springframeworkServlet实现改写
+
+### 3.3. 单例模式
+
+- 单例模式的多种实现方法
+- 根据业务场景来使用不同的单例bean
 
 ## 四、待办清单
 
