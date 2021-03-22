@@ -23,7 +23,10 @@ public class ConverterBookController {
     }
 
     @RequestMapping("printString")
-    public void getBookString(Book book1) {
-        System.out.println(book1.toString());
+    public void getBookString(Book book1
+            , Book book2
+    ) {
+        System.out.println("book1: " + book1.toString());
+        System.out.println("book2: " + book2.toString());
     }
 }

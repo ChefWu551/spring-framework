@@ -629,8 +629,29 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
     进行对应适配器类型转换
 
-  - 最后通过GeneriConversionService.convert()->Converter<S, T>.convert()->BookParamConverter.convert()完成类型转换
+  - 若需要根据传入类型和传出类型找到对应的converter
 
+    ```java
+    // GenericConversionService
+    public GenericConverter find(TypeDescriptor sourceType, TypeDescriptor targetType) {
+       // Search the full type hierarchy
+       List<Class<?>> sourceCandidates = getClassHierarchy(sourceType.getType());
+       List<Class<?>> targetCandidates = getClassHierarchy(targetType.getType());
+       for (Class<?> sourceCandidate : sourceCandidates) {
+          for (Class<?> targetCandidate : targetCandidates) {
+             ConvertiblePair convertiblePair = new ConvertiblePair(sourceCandidate, targetCandidate);
+             GenericConverter converter = getRegisteredConverter(sourceType, targetType, convertiblePair);
+             if (converter != null) {
+                return converter;
+             }
+          }
+       }
+       return null;
+    }
+    ```
+  
+  - 最后通过GeneriConversionService.convert()->Converter<S, T>.convert()->BookParamConverter.convert()完成类型转换
+  
   #### 
 
 #### 1.4.7. spring-@RequestBody与@ResponseBody
@@ -873,7 +894,8 @@ doDispatch->往后
 
 - ==autowired 是实现原理（UML）==
 - ==bean生命周期源码及源码梳理（UML）==
-- ==spring中 Filter和Interceptor的使用和区别==
+- ==spring三级缓存知识梳理，源码调试==
+- spring中 Filter和Interceptor的使用和区别
   - filter为java web自带的组件(javax.servlet.Filter)，功能比较单一，且必须使用web.xml进行配置，因为他是非ioc组件不能通过@Component来初始化到ioc容器内
   - interceptor是ioc组件，有多种处理方式，preHandler、postHandler、afterCompletion
 
