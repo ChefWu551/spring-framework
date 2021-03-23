@@ -1,6 +1,6 @@
-# Spring Framework
+# 一、Spring Framework
 
-## 一、任务清单
+## 一、spring
 
 ### 1.1. IOC容器篇
 #### 1.1.1. xml 篇
@@ -379,7 +379,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
     - Propagation.REQUIRES_NEW 另起一个事务，该事务与主事务无关
     - Propagation.REQUIRED 和主事务绑定，若主事务执行异常则一同失败
 
-### 1.4. spring-javaweb
+## 二、spring-mvc
 
 #### 1.4.1. 实验一：spring与javaweb整合
 
@@ -888,7 +888,7 @@ doDispatch->往后
 
 #### 
 
-## 二、其他知识
+# 二、其他知识
 
 ### 2.1. Spring知识
 
@@ -1269,13 +1269,13 @@ public interface Servlet {
 
 ​	通过实现Filter接口，重写doFilter方法，获取请求头的token信息，然后解析token获取userid后重新set到parameterRequestWrapper（是HttpServletRequest的实现类）对象中
 
-## 三、设计模式
+# 三、设计模式
 
-### 3.1. 工厂模式
+## 3.1. 工厂模式
 
 - 多种工厂模式梳理
 
-### 3.2. 模板方法模式
+## 3.2. 模板方法模式
 
 ​	定义了执行的框架，将一些步骤延迟到之类中，模板方法使得子类可以在不改变算法结构的情况下重新定义算法中的某些步骤。
 
@@ -1290,14 +1290,123 @@ public interface Servlet {
 	- 实现comparable接口的，使用Arrays.sort()自定义排序
 	- servlet的五个方法，httpServlet被springframeworkServlet实现改写
 
-### 3.3. 单例模式
+## 3.3. 单例模式
 
 - 单例模式的多种实现方法
 - 根据业务场景来使用不同的单例bean
 
-## 四、待办清单
+# 四、MyBatis
 
-### 3.1.重点知识待办
+## 4.1. mybatis与Hibernate区别及适用场景
 
-- 
+## 4.2. MyBatis
+
+### 4.2.1. 根据官方文档配置log4j
+
+### mybatis全局配置文件及启动项目
+
+- 导入全局配置的dtd标签提示文件
+- namespace
+- setting
+  - 缓存
+  - 懒加载
+  - 驼峰
+  - 等，参照官方文档
+- environment 
+  - datasource
+  - transactionManager
+  - 指定不同环境使用的数据库配置-全局配置文件
+  - 指定不同db使用的sql配置-mapper层
+- 引入外部文件标签 property
+
+### 使用sqlsessionFactory进行测试
+
+### typerhandler类型处理器
+
+- 可通过实现TypeHandler接口或BaseTyperHander重写
+- 把自定义的类型处理器加入到mybatis.xml文件中
+
+### ObjectFactory查询出数据封装对象ORM
+
+### Mybatis插件使用
+
+​	可以修改mybatis核心功能，插件通过动态代理机制可以介入四大对象任意执行方法
+
+- Executor
+- ParameterHandler
+- ResultSetHander
+- StatementHandler
+
+### Mapper层的三个引用
+
+- URL
+- Resource
+- class
+
+### Mybatis获取自增主键及非自增主键id获取
+
+- userGenerationKey
+- keyProperty
+- selectKey标签order属性、resultType属性、keyProperty属性
+
+### mapper查询参数
+
+- 一个参数
+- 多个参数
+- 传入pojo
+- map
+- 对象嵌套对象的引用
+
+### ${}和#{}区别
+
+### sql查询返回集合处理
+
+- 查询返回list
+- 返回map
+- 查询多条记录封装map
+
+### 自定义字段名映射
+
+- resultMap
+  - 标签id
+  - 标签result
+- resultMap与resultType
+
+### 标签association使用
+
+- 联查对象
+- 一对多、多对多、多对一
+
+### 开启查询的按需加载
+
+- lazy
+- eager
+
+### Mybatis动态sql
+
+- 标签if
+- 标签where
+- 标签trim
+- 标签foreach
+  - collection
+  - item
+  - close
+  - open
+  - seperator
+  - index
+    - 针对`map`
+    - 针对list
+
+- 标签set
+- 标签choose
+
+### Mybatis一级缓存
+
+- 失效情况
+- 源码
+  - 接口cache-perpetualCache-Map缓存对象
+  - BaseExecutor-query方法
+  - 源码调试
+
+
 
