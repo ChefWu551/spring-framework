@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+    <properties resource="mysql.properties"></properties>
+    
+    <settings>
+        <!--日志标签:指定 MyBatis 所用日志的具体实现，未指定时将自动查找。-->
+        <setting name="logImpl" value="LOG4J"/>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="mapUnderscoreToCamelCase" value="false"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+    </settings>
+
+    <environments default="development">
+        <environment id="development">
+            <!--
+                type:
+                    JDBC – 这个配置直接使用了JDBC的提交和回滚设施，它依赖从数据源获得的连接来管理事务作用域。
+                    MANAGED – 这个配置几乎没做什么。它从不提交或回滚一个连接，而是让容器来管理事务的整个生命周期（比如 JEE 应用服务器的上下文）。
+                        默认情况下它会关闭连接。然而一些容器并不希望连接被关闭，因此需要将 closeConnection 属性设置为 false 来阻止默认的关闭行为。
+             -->
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${mysql.driver}"/>
+                <property name="url" value="${mysql.url}"/>
+                <property name="username" value="${mysql.username}"/>
+                <property name="password" value="${mysql.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="mapper/TestMybatisMapper.xml"/>
+    </mappers>
+</configuration>

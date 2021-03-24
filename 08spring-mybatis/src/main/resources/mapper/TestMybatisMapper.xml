@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mountain.mapper.TestMybatisMapper">
+
+    <resultMap id="student" type="com.mountain.model.Student">
+        <id column="id" property="id"/>
+        <result column="student_name" property="studentName"/>
+        <result column="student_age" property="studentAge"/>
+    </resultMap>
+
+    <select id="selectStudentNameById" resultType="java.lang.String">
+        select student_name from student where id = #{id}
+    </select>
+
+    <select id="selectStudentById" resultMap="student">
+        select id, student_name, student_age from student where id = #{id}
+    </select>
+
+    <select id="selectStudentByNameAndAge" resultMap="student">
+        select id, student_name, student_age from student where student_age = #{age} and student_name = '${studentName}'
+    </select>
+
+</mapper>

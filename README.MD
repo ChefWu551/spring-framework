@@ -1303,32 +1303,127 @@ public interface Servlet {
 
 ### 4.2.1. 根据官方文档配置log4j
 
-### mybatis全局配置文件及启动项目
+### 4.2.2. mybatis全局配置文件及启动项目
 
 - 导入全局配置的dtd标签提示文件
+
 - namespace
+
 - setting
   - 缓存
   - 懒加载
   - 驼峰
   - 等，参照官方文档
+  
+  ```xml
+  <settings>
+      <!--日志标签:指定 MyBatis 所用日志的具体实现，未指定时将自动查找。-->
+      <setting name="logImpl" value="LOG4J"/>
+      <setting name="cacheEnabled" value="true"/>
+      <setting name="mapUnderscoreToCamelCase" value="false"/>
+      <setting name="lazyLoadingEnabled" value="true"/>
+  </settings>
+  ```
+  
 - environment 
+  
   - datasource
   - transactionManager
   - 指定不同环境使用的数据库配置-全局配置文件
   - 指定不同db使用的sql配置-mapper层
+  
+  ```xml
+  <environments default="development">
+      <environment id="development">
+          <!--
+                  type:
+                      JDBC – 这个配置直接使用了JDBC的提交和回滚设施，它依赖从数据源获得的连接来管理事务作用域。
+                      MANAGED – 这个配置几乎没做什么。它从不提交或回滚一个连接，而是让容器来管理事务的整个生命周期（比如 JEE 应用服务器的上下文）。
+                          默认情况下它会关闭连接。然而一些容器并不希望连接被关闭，因此需要将 closeConnection 属性设置为 false 来阻止默认的关闭行为。
+               -->
+          <transactionManager type="JDBC"/>
+          <dataSource type="POOLED">
+              <property name="driver" value="${mysql.driver}"/>
+              <property name="url" value="${mysql.url}"/>
+              <property name="username" value="${mysql.username}"/>
+              <property name="password" value="${mysql.password}"/>
+          </dataSource>
+      </environment>
+  </environments>
+  ```
+  
 - 引入外部文件标签 property
 
-### 使用sqlsessionFactory进行测试
+  ```xml
+  <properties resource="mysql.properties"></properties>
+  ```
 
-### typerhandler类型处理器
+### 4.2.3. 使用sqlsessionFactory进行测试
+
+- 获取sqlsessionFactory
+
+  ```java
+  String resource = "mybatis-config.xml";
+  InputStream inputStream = Resources.getResourceAsStream(resource);
+  sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+  ```
+
+- 执行查询语句
+
+  ```java
+  SqlSession session = sqlSessionFactory.openSession();
+  TestMybatisMapper mybatisMapper = session.getMapper(TestMybatisMapper.class);
+  System.out.println("学生姓名是： " + mybatisMapper.selectStudentNameById(5));
+  ```
+
+### 4.2.4. ==typerhandler类型处理器==
 
 - 可通过实现TypeHandler接口或BaseTyperHander重写
 - 把自定义的类型处理器加入到mybatis.xml文件中
 
-### ObjectFactory查询出数据封装对象ORM
+### 4.2.5. ObjectFactory查询出数据封装对象ORM
 
-### Mybatis插件使用
+- dao层
+
+  ```java
+  public interface TestMybatisMapper {
+      Student selectStudentById(Integer id);
+  }
+  ```
+
+- mapper层
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <!DOCTYPE mapper
+          PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.mountain.mapper.TestMybatisMapper">
+  
+      <resultMap id="student" type="com.mountain.model.Student">
+          <id column="id" property="id"/>
+          <result column="student_name" property="studentName"/>
+          <result column="student_age" property="studentAge"/>
+      </resultMap>
+  
+      <select id="selectStudentById" resultMap="student">
+          select id, student_name, student_age from student where id = #{id}
+      </select>
+  </mapper>
+  ```
+
+- 测试
+
+  ```java
+  @Test
+  public void printSelectStudentById() {
+      SqlSession session = sqlSessionFactory.openSession();
+      TestMybatisMapper mybatisMapper = session.getMapper(TestMybatisMapper.class);
+      System.out.println("学生信息是： " + mybatisMapper.selectStudentById(5));
+  }
+  ```
+
+### 4.2.6. ==Mybatis插件使用==
 
 ​	可以修改mybatis核心功能，插件通过动态代理机制可以介入四大对象任意执行方法
 
@@ -1337,19 +1432,19 @@ public interface Servlet {
 - ResultSetHander
 - StatementHandler
 
-### Mapper层的三个引用
+### 4.2.7. Mapper层的三个引用
 
-- URL
-- Resource
-- class
+- URL: 可以引用外部的文件
+- Resource：项目内部路径文件的引用
+- class：指向的是DAO接口层，mybatis会根据接口层的接口生成对应的javaBean
 
-### Mybatis获取自增主键及非自增主键id获取
+### 4.2.8. Mybatis获取自增主键及非自增主键id获取
 
 - userGenerationKey
 - keyProperty
 - selectKey标签order属性、resultType属性、keyProperty属性
 
-### mapper查询参数
+### 4.2.9. mapper查询参数
 
 - 一个参数
 - 多个参数
@@ -1357,32 +1452,64 @@ public interface Servlet {
 - map
 - 对象嵌套对象的引用
 
-### ${}和#{}区别
+### 4.2.10. 动态传参${}和#{}区别
 
-### sql查询返回集合处理
+|      | #{}                         | ${}                                  |
+| ---- | --------------------------- | ------------------------------------ |
+|      | 为参数占位符？，sql预编译   | 为字符串替换，sql拼接                |
+|      | 变量替换是在DBMS 中         | 变量替换是在 DBMS 外                 |
+|      | 对应的变量自动加上单引号 '' | 对应的变量不会加上单引号 ''          |
+|      | 能防止sql 注入              | 不能防止sql 注入(student="x" or 1=1) |
+
+```xml
+<select id="selectStudentByNameAndAge" resultMap="student">
+    select id, student_name, student_age from student where student_age = #{age} and student_name = '${studentName}'
+</select>
+```
+
+```log
+[DEBUG] 2021-03-24 21:57:58,337 org.apache.ibatis.transaction.jdbc.JdbcTransaction - Setting autocommit to false on JDBC Connection [com.mysql.cj.jdbc.ConnectionImpl@77fbd92c]
+[DEBUG] 2021-03-24 21:57:58,339 com.mountain.mapper.TestMybatisMapper.selectStudentByNameAndAge - ==>  Preparing: select id, student_name, student_age from student where student_age = ? and student_name = 'xiaoming' 
+[DEBUG] 2021-03-24 21:57:58,378 com.mountain.mapper.TestMybatisMapper.selectStudentByNameAndAge - ==> Parameters: 12(Integer)
+[DEBUG] 2021-03-24 21:57:58,403 com.mountain.mapper.TestMybatisMapper.selectStudentByNameAndAge - <==      Total: 1
+学生信息是： Student(id=1, studentName=xiaoming, studentAge=12)
+```
+
+由上面执行语句可知在prepareStatement的时候，${}已经完成了值的替换，而#{}则是通过占位符，进行预编译处理（对jdbc类型自动转换，字符串自动添加双引号，数值型直接赋值）
+
+${} 应用场景：可以用于动态表 例如 log_2 或者 log_1 这种替换，主要用于非传参值的表名，字段名替换
+
+**编译和预编译：**
+
+- 预编译：预编译又称为预处理，是做些代码文本的替换工作。处理#开头的指令，比如拷贝#include包含的文件代码，#define宏定义的替换,条件编译等，就是为编译做的预备工作的阶段主要处理#开始的预编译指令。
+- 编译：
+  - 利用编译程序从源语言编写的源程序产生目标程序的过程。
+  - 用编译程序产生目标程序的动作。 编译就是把高级语言变成计算机可以识别的2进制语言，计算机只认识1和0，编译程序把人们熟悉的语言换成2进制的
+
+### 4.2.11. sql查询返回集合处理
 
 - 查询返回list
 - 返回map
 - 查询多条记录封装map
 
-### 自定义字段名映射
+### 4.2.12. 自定义字段名映射
 
 - resultMap
   - 标签id
   - 标签result
 - resultMap与resultType
 
-### 标签association使用
+### 4.2.13. 标签association使用
 
 - 联查对象
 - 一对多、多对多、多对一
 
-### 开启查询的按需加载
+### 4.2.14. 开启查询的按需加载
 
 - lazy
 - eager
 
-### Mybatis动态sql
+### 4.2.15. Mybatis动态sql
 
 - 标签if
 - 标签where
@@ -1400,7 +1527,7 @@ public interface Servlet {
 - 标签set
 - 标签choose
 
-### Mybatis一级缓存
+### 4.2.16. Mybatis一级缓存
 
 - 失效情况
 - 源码
