@@ -30,8 +30,8 @@ public class Main01 {
         System.out.println(person.toString());
 
         // 配置xml引用对象
-//        System.out.println("== 配置xml引用对象 ==");
-//        Book bookTemplate = (Book) applicationContext.getBean("bookTemplate");
-//        System.out.println(bookTemplate.toString());
+        System.out.println("== 配置xml引用对象 ==");
+        Book bookTemplate = (Book) applicationContext.getBean("bookTemplate");
+        System.out.println(bookTemplate.toString());
     }
 }

@@ -1,25 +1,22 @@
 package com.mountain;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.mountain.model.Book;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main02 {
 
-    // todo:静态工厂方法获取bean和实例工厂获取bean同时运行时会抛出异常，理清为什么
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-config02.xml");
         // 顺序 执行构造方法-实例化-销毁bean
         // 静态工厂实例化
-     /*   Book book01 = (Book) applicationContext.getBean("book01");
+        Book book01 = (Book) applicationContext.getBean("book01");
         System.out.println(book01);
         System.out.println("== 静态工厂结束");
-        applicationContext.close();*/
-
+        applicationContext.close();
         // 实例化工厂
-        Book book02 = (Book) applicationContext.getBean("book02");
-        System.out.println(book02);
+        /*Book book02 = (Book) applicationContext.getBean("book02");
+        System.out.println(book02);*/
 
         // 静态工厂方法生成的实例是否同一个
   /*      Book book04 = (Book) applicationContext.getBean("book01");

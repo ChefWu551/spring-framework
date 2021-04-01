@@ -28,7 +28,7 @@
     ->bw.setPropertyValues(new MutablePropertyValues(deepCopy));->ma.invoke(obj, args);
     ```
 
-  - bean初始化对象时，-<constructor-arg>标签对应的是构造方法的有参个数，必须一一对应，否则编译错误
+  - bean初始化对象时，`<constructor-arg>`标签对应的是构造方法的有参个数，必须一一对应，否则编译错误
 
 - 实验二：构造方法初始化bean及标签index顺序赋值使用；
 
@@ -40,7 +40,7 @@
   </bean>
   ```
 
-- 实验三：泛型容器的赋值**list、map、List<Object>;**标签ref的外部引用；parent继承属性及修改对应的bean属性值[指向性，所以当重新对对象赋值后，原对象的属性值也会跟着改变]；
+- 实验三：泛型容器的赋值`list`、`map`、`List<Object>`标签ref的外部引用；parent继承属性及修改对应的bean属性值[指向性，所以当重新对对象赋值后，原对象的属性值也会跟着改变]；
 
   ```xml
   <bean class="com.mountain.model.Person" id="person01">
@@ -181,7 +181,13 @@
 
     直接new一个自己，或者在bean中配置都可以
 
-  - **==bean的生命周期==**
+  - **bean的生命周期**
+
+    - 执行构造方法
+    - BeanPostProcess--postProcessBeforeInitialization
+    - init-method
+    - BeanPostProcess--postProcessAfterInitialization
+    - destory-method
 
 - 实验六：为bean初始化过程添加后置处理器，继承BeanPostProcessor
 

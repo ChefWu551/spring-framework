@@ -14,7 +14,7 @@
             - 属性的getter、setter
     -->
     <!--scope: 表示单例或者多实例-->
-    <bean class="com.mountain.model.BookNum" id="book" scope="singleton">
+    <bean class="com.mountain.model.Book" id="book" scope="singleton">
         <property name="bookName" value="平凡的世界"/>
         <property name="author" value="路遥"/>
         <property name="age" value="${book.age}"/>
@@ -24,7 +24,7 @@
         任务二：构造方法初始化bean及标签index顺序赋值使用
             - 带参构造方法
     -->
-    <bean class="com.mountain.model.BookNum" id="book01">
+    <bean class="com.mountain.model.Book" id="book01">
         <constructor-arg value="红楼梦" index="0"/>
         <constructor-arg value="曹雪芹" index="1"/>
         <constructor-arg value="45" index="2"/>
