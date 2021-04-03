@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExceptionController {
 
     @RequestMapping("arithmatic")
-    @ExceptionHandler(ArithmaticException.class)
+//    @ExceptionHandler(ArithmaticException.class)
     public void mathException(@RequestParam int value1, @RequestParam int value2){
+        int i = value1 / value2;
         System.out.println(value1 / value2);
     }
 }

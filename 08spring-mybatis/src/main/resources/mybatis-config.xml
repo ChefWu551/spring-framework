@@ -10,6 +10,8 @@
     <settings>
         <!--日志标签:指定 MyBatis 所用日志的具体实现，未指定时将自动查找。-->
         <setting name="logImpl" value="LOG4J"/>
+<!--        -->
+<!--        设置的是二级缓存，一级缓存一直处于打开状态-->
         <setting name="cacheEnabled" value="true"/>
         <setting name="mapUnderscoreToCamelCase" value="false"/>
         <setting name="lazyLoadingEnabled" value="true"/>

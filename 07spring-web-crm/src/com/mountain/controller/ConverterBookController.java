@@ -19,7 +19,7 @@ public class ConverterBookController {
     @RequestMapping("printBook")
     public String getBook(@RequestParam("bookObject") Book book, HttpServletRequest request, HttpServletResponse response) {
         System.out.println(book.toString());
-        return "book" ;
+        return "book";
     }
 
     @RequestMapping("printString")

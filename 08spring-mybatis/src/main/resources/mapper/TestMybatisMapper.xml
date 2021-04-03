@@ -3,14 +3,17 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mountain.mapper.TestMybatisMapper">
-
+    <!--指定当前的dao接口使用二级缓存-->
+<!--    缓存一般使用第三方缓存-->
+    <cache/>
     <resultMap id="student" type="com.mountain.model.Student">
         <id column="id" property="id"/>
         <result column="student_name" property="studentName"/>
         <result column="student_age" property="studentAge"/>
     </resultMap>
 
-    <select id="selectStudentNameById" resultType="java.lang.String">
+<!--    指定二级缓存失效，对一级缓存没有影响，依然会使用一级缓存-->
+    <select id="selectStudentNameById" resultType="java.lang.String" useCache="false">
         select student_name from student where id = #{id}
     </select>
 
@@ -21,5 +24,10 @@
     <select id="selectStudentByNameAndAge" resultMap="student">
         select id, student_name, student_age from student where student_age = #{age} and student_name = '${studentName}'
     </select>
+
+<!--    flushCache在增删改的时候会清空一级缓存和二级缓存-->
+    <update id="" flushCache="true">
+
+    </update>
 
 </mapper>

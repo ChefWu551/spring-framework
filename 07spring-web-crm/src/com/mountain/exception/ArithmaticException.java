@@ -15,8 +15,12 @@ public class ArithmaticException extends Throwable implements HandlerExceptionRe
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         ModelAndView mv = new ModelAndView();
-        mv.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        mv.setViewName("error");
+        if (ex instanceof ArithmeticException) {
+
+            mv.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            mv.setViewName("error");
+        }
+
         return mv;
     }
 }

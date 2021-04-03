@@ -1576,10 +1576,49 @@ ${} 应用场景：可以用于动态表 例如 log_2 或者 log_1 这种替换�
 ### 4.2.16. Mybatis一级缓存
 
 - 失效情况
+  - sqlsession指定清空缓存 sqlsession.clear
+  - 执行了删除和更新操作
+  - 调用的是未曾调用过的查询语句
+  - sqlsession关闭
+- 一级缓存的作用域是 一个sqlsession，
 - 源码
   - 接口cache-perpetualCache-Map缓存对象
   - BaseExecutor-query方法
   - 源码调试
 
+### 4.2.17. Mybatis二级缓存
 
+- 生效情况：在一级缓存sqlsession关闭或者提交之后才会生效，一级缓存会放到二级缓存中
+
+- 步骤：
+
+  - 开启全局缓存
+
+  - 开启对应的dao接口使用二级缓存
+  - 序列化pojo
+  - 在一个session里面查询两条一样的sql，测试是否生效（请求的sql次数为1次，查看缓存命中情况）
+
+- 缓存的查询顺序：
+
+  - 二级缓存先查，若没有则查数据库，结果放入一级缓存，一级缓存关闭后会把数据放入二级缓存中，若一级缓存没有关闭，继续查的话，则一级缓存返回，
+  - 画执行的流程图
+  - 
+
+- 写一个自己的缓存，实现cache接口
+
+- 引入第三方缓存
+
+  - 引入时下比较流行的缓存框架 -  chcache [mybatis-ehcache.jar ehcache.jar]，导入依赖包 log4j.jar
+
+  - 引入缓存的配置文件 ehcache.xml 放置在根目录下
+
+  - 在dao曾文件引入ehcache缓存
+
+    ```
+    <cache type="全类名">
+    ```
+
+    
+
+- Cache-ref 标签引入 缓存
 
