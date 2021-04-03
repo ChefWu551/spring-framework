@@ -86,7 +86,7 @@
 - 实验四：abstract声明true时候不会生成对应的bean，此时对象只能作为模板，被其他bean所引用；
 
   ```xml
-  <bean class="com.mountain.model.BookNum" id="bookTemplate" abstract="true">
+  		<bean class="com.mountain.model.BookNum" id="bookTemplate" abstract="true">
       <constructor-arg value="bookNameTemp"/>
       <constructor-arg value="authorTemp"/>
       <constructor-arg value="12"/>
@@ -295,7 +295,7 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
   - noRollbackFor/noRollbackForClassName/rollbackFor/rollbackForClassName
   - readOnly/Timeout
 - 受检异常和未受检异常回滚机制
-- Transaction-readOnly/Timeout
+  - Transaction-readOnly/Timeout
 - 并发修改
 
 **实现:**
@@ -1268,6 +1268,36 @@ public interface Servlet {
     - 方法一和方法二中，在返回前会声明一个返回值的栈，当try执行return时，会把value值写入这个栈（基本类型），若finally中无return则此时返回值无需修改，直接返回即可；若finally中有return则返回修改的值；finally一定会在方法结束前执行！
 
     - 方法一和方法四中：如果针对基本类型，返回的是实际的值是实现开辟好的基本类型的栈；若非基类，则返回的是对象的引用，因此会按照finally最后对象引用之返回！
+
+### 2.6. mysql相关
+
+#### 2.6.1. 事务管理(105课)
+
+- 查询默认隔离级别
+
+  ```sql
+  SELECT @@transaction_isolation;
+  ```
+
+- 修改当前session(glabal)的事务隔离级别
+
+  - Read uncommitted
+
+    ![mysql-tx-read-uncommited](image/mysql-tx-read-uncommited.png)
+
+  - read committed
+
+  - Repeatable read
+
+    ![mysql-tx-repeatable-read](image/mysql-tx-repeatable-read.png)
+
+  - Serializable
+
+  ```sql
+  SET session TRANSACTION ISOLATION LEVEL Serializable;
+  ```
+
+- 根据事务隔离级别进行测试提交及回滚操作
 
 ### 2.5. 其他
 
