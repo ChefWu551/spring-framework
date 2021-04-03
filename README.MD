@@ -387,6 +387,12 @@ System.out.println("获取的对象是：" + calculator + "; 对象类是：" + 
 
 ## 二、spring-mvc
 
+#### 1.4.0. idea+tomcat+springmvc启动
+
+![config-springmvc-01](image/config-springmvc-01.png)
+
+![config-tomcat-springmvc02](image/config-tomcat-springmvc02.png)
+
 #### 1.4.1. 实验一：spring与javaweb整合
 
 - WebApplicationContext(ContextInitialized & ContentDestory)
@@ -1490,12 +1496,12 @@ public interface Servlet {
 
 ### 4.2.10. 动态传参${}和#{}区别
 
-|      | #{}                         | ${}                                  |
-| ---- | --------------------------- | ------------------------------------ |
-|      | 为参数占位符？，sql预编译   | 为字符串替换，sql拼接                |
-|      | 变量替换是在DBMS 中         | 变量替换是在 DBMS 外                 |
-|      | 对应的变量自动加上单引号 '' | 对应的变量不会加上单引号 ''          |
-|      | 能防止sql 注入              | 不能防止sql 注入(student="x" or 1=1) |
+|      | #{}                         | ${}                                  |      |
+| ---- | --------------------------- | ------------------------------------ | ---- |
+|      | 为参数占位符？，sql预编译   | 为字符串替换，sql拼接                |      |
+|      | 变量替换是在DBMS 中         | 变量替换是在 DBMS 外                 |      |
+|      | 对应的变量自动加上单引号 '' | 对应的变量不会加上单引号 ''          |      |
+|      | 能防止sql 注入              | 不能防止sql 注入(student="x" or 1=1) |      |
 
 ```xml
 <select id="selectStudentByNameAndAge" resultMap="student">
