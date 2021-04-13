@@ -103,13 +103,13 @@
 
   - Read uncommitted
 
-    ![mysql-tx-read-uncommited](/Users/yuefengwu/code/spring-framework/image/mysql-tx-read-uncommited.png)
+    ![mysql-tx-read-uncommited](image/mysql-tx-read-uncommited.png)
 
   - read committed
 
   - Repeatable read
 
-    ![mysql-tx-repeatable-read](/Users/yuefengwu/code/spring-framework/image/mysql-tx-repeatable-read.png)
+    ![mysql-tx-repeatable-read](image/mysql-tx-repeatable-read.png)
 
   - Serializable
 
@@ -310,17 +310,70 @@ alter column rental_duration set default 5;
 
 - 缺点：
 
-  - 
+  - 数据页内的数据是保持有序的，因此插入的时候会相对无序的慢一点
+  - 数据页每页的大小容量是固定的，若删除当前页的数据比较多，此时会产生较多的数据碎片
+  - 当插入的数据的时候，有于数据页已经满了，因此可能产生页分裂的情况
 
 #### 10. 覆盖索引
 
-#### 
+- 不需要回表操作，可直接返回索引列对应的数据结果，效率很高
 
-#### 
+### 99. mysql实战优化
 
-#### 
+#### 1. 一条sql执行的过程
 
-#### 
+- 从线程驱动连接、连接池、sql被获取、解析、优化、执行(三种日志的读写和同步)、存储引擎、读写磁盘。。。。
+
+#### 2. binlog和redo log
+
+- 使用场景
+- 各自特点
+- 读写、保存、恢复方式
+
+#### 3. 常用的基准测试指标
+
+- TPS、QPS、
+- 吞吐量：机器的磁盘存储每秒可以读写多少字节的数据量
+- IOPS：机器的随机ip并发能力
+- latency：往磁盘写入一条数据的延时
+- 带宽、cup、内存
+
+#### 4. 缓存池buffer pool
+
+- 作用/定义：缓存了磁盘的真是数据，对数据库的增删改操作其实就是对缓存的增删改
+- 手动分配修改buffer pool大小
+- 读取磁盘页数据（最小单位）入缓存页中(16KB)，并添加缓存页的数据描述（大小为缓存页的5%，800字节；数据的表，磁盘所在的位置，数据页的位置）
+
+#### 5. 缓存池的free链表
+
+- 用于记录缓存池中未被使用的缓存页信息，存储的数据块描述
+
+- 一个双向链表的指针链，
+
+  ```
+  pre 数据块描述1 next  pre 数据块描述2 next ... null 
+  ```
+
+- 缓存的链表都是置于buffer pool中的，但有一个free的基础节点，40KB左右，用于记录链表的头节点和尾节点的地址信息以及当前又多少个字节
+
+#### 6. 读取数据页入缓存页的过程
+
+- 先获取free链表的一个数据描述块
+- 读取磁盘数据页入缓存页中，并在数据描述块上添加对应的缓存页、数据页的信息（包含了表空间、页位置等信息，表空间和页位置信息通过hash算法后行成一个缓存表，用于缓存）
+
+#### 7. 如何从free链表移除数据描述块
+
+- 一个类似指针的操作，pop操作
+
+#### 8. flush链表
+
+- 用于记录被修改的脏页缓存链表，只有增删改才会产生脏数据，此时的缓存页也被叫做脏页
+- 是类似free链表的双向指针结构
+
+#### 9. 缓存不够淘汰原则
+
+- 使用LRU算法，使用缓存命中率来淘汰使用最少的缓存页，将其写入磁盘
+- 并从LRU链表中释放对应的缓存页索引信息
 
 ## 知识补充
 
