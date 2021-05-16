@@ -22,7 +22,7 @@
             - 通过<context:component-scan base-package="com.com.mountain"/>来进行扫描包
         3.  一定要导入aop包（支持注解模式）【com.springframework.aop.targetSource】
    -->
-    <context:component-scan base-package="com.com.mountain"/>
+    <context:component-scan base-package="com.mountain"/>
 
 
     <!--
