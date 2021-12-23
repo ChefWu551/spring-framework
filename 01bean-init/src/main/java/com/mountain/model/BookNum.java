@@ -1,7 +1,7 @@
 package com.mountain.model;
 
 
-public class BookNum {
+public class  BookNum {
     private String bookName;
     private String author;
     private String age;
